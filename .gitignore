@@ -1,0 +1,64 @@
+# Gradle
+.gradle/
+build/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
+out/
+
+# NetBeans
+nb-configuration.xml
+
+# Visual Studio Code
+.vscode
+.factorypath
+
+# OSX
+.DS_Store
+
+# Vim
+*.swp
+*.swo
+
+# patch
+*.orig
+*.rej
+
+# Local environment
+.env
+.env.*
+
+# Plugin directory
+/.quarkus/cli/plugins/
+# TLS Certificates
+.certs/
+
+# Logs
+logs/
+*.log
+
+# Temporary/backup files
+*.tmp
+*.bak
+
+# Compiled files
+*.class
+*.jar
+*.war
+*.ear
+
+# Test output
+test-output/
+
+# Coverage reports
+coverage/
+.coverage/
