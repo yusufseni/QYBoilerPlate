@@ -17,8 +17,11 @@ public class UserResource {
     UserService userService;
 
     @GET
-    public List<UserDTO> list() {
-        return userService.listAll();
+    public Response list(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("10") int size) {
+        List<UserDTO> users = userService.listAllPaged(page, size);
+        return Response.ok(users).build();
     }
 
     @GET

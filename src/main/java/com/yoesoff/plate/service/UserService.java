@@ -6,14 +6,23 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.yoesoff.plate.repository.UserRepository;
+import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class UserService {
 
-    public List<UserDTO> listAll() {
-        return User.listAll().stream()
-                .map(entity -> toDTO((User) entity))
-                .collect(Collectors.toList());
+    @Inject
+    UserRepository userRepository;
+
+    public List<UserDTO> listAllPaged(int page, int size) {
+        // Example using a repository or DAO with pagination support
+        int pageIndex = Math.max(page - 1, 0); // Adjusting page index to be zero-based
+        int offset = pageIndex * size;
+        return this.userRepository.findPaged(offset, size)
+                .stream()
+                .map(this::toDTO)
+                .toList();
     }
 
     public UserDTO findById(Long id) {
