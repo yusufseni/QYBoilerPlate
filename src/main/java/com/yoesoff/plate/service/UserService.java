@@ -5,7 +5,8 @@ import com.yoesoff.plate.dto.UserDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
+
 import com.yoesoff.plate.repository.UserRepository;
 import jakarta.inject.Inject;
 
@@ -25,7 +26,7 @@ public class UserService {
                 .toList();
     }
 
-    public UserDTO findById(Long id) {
+    public UserDTO findById(UUID id) {
         User user = User.findById(id);
         return user != null ? toDTO(user) : null;
     }
@@ -38,7 +39,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO update(Long id, UserDTO dto) {
+    public UserDTO update(UUID id, UserDTO dto) {
         User user = User.findById(id);
         if (user == null) return null;
         user.username = dto.username;
@@ -47,7 +48,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean delete(Long id) {
+    public boolean delete(UUID id) {
         return User.deleteById(id);
     }
 

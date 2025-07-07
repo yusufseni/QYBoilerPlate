@@ -7,6 +7,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import java.util.UUID;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -26,7 +27,7 @@ public class UserResource {
 
     @GET
     @Path("/{id}")
-    public Response get(@PathParam("id") Long id) {
+    public Response get(@PathParam("id") UUID id) {
         UserDTO user = userService.findById(id);
         if (user == null) return Response.status(Response.Status.NOT_FOUND).build();
         return Response.ok(user).build();
@@ -40,7 +41,7 @@ public class UserResource {
 
     @PUT
     @Path("/{id}")
-    public Response update(@PathParam("id") Long id, UserDTO dto) {
+    public Response update(@PathParam("id") UUID id, UserDTO dto) {
         UserDTO updated = userService.update(id, dto);
         if (updated == null) return Response.status(Response.Status.NOT_FOUND).build();
         return Response.ok(updated).build();
@@ -48,7 +49,7 @@ public class UserResource {
 
     @DELETE
     @Path("/{id}")
-    public Response delete(@PathParam("id") Long id) {
+    public Response delete(@PathParam("id") UUID id) {
         boolean deleted = userService.delete(id);
         if (!deleted) return Response.status(Response.Status.NOT_FOUND).build();
         return Response.noContent().build();
