@@ -5,6 +5,7 @@ import com.yoesoff.plate.service.AuthService;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
@@ -43,6 +44,7 @@ public class AuthResource {
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Transactional
     public Response doLogin(@RestForm String username, @RestForm String password, @Context UriInfo uriInfo) {
         if (username == null || password == null || username.isBlank() || password.isBlank()) {
             URI uri = uriInfo.getBaseUriBuilder().path("login").queryParam("msg", "Username/password wajib").build();
@@ -79,6 +81,7 @@ public class AuthResource {
     @POST
     @Path("registration")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Transactional
     public Response doRegister(@RestForm String username, @RestForm String email, @RestForm String password, @Context UriInfo uriInfo) {
         if (username == null || email == null || password == null ||
                 username.isBlank() || email.isBlank() || password.isBlank()) {
@@ -117,6 +120,7 @@ public class AuthResource {
     // --- LOGOUT ---
     @GET
     @Path("logout")
+    @Transactional
     public Response logout(@CookieParam(SESSION_COOKIE) String token, @Context UriInfo uriInfo) {
         if (token != null && !token.isBlank()) {
             auth.deleteSession(token);
