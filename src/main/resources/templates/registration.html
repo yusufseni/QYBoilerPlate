@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Registration</title></head>
+<body>
+{#if msg}<p style="color:red">{msg}</p>{/if}
+<h1>Registrasi</h1>
+<form action="/registration" method="post">
+    <div><label>Username: <input type="text" name="username" required></label></div>
+    <div><label>Email: <input type="email" name="email" required></label></div>
+    <div><label>Password: <input type="password" name="password" required></label></div>
+    <button type="submit">Daftar</button>
+</form>
+<p>Sudah punya akun? <a href="/login">Login</a></p>
+</body>
+</html>

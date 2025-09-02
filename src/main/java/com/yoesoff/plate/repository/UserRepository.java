@@ -12,4 +12,8 @@ public class UserRepository implements PanacheRepository<User> {
         int page = offset / size;
         return findAll().page(Page.of(page, size)).list();
     }
+
+    public User findByUsername(String username) {
+        return find("username", username).firstResult();
+    }
 }

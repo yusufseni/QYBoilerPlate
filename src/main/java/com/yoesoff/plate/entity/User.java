@@ -7,29 +7,34 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "app_users")
+@Table(name = "app_users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"username"}),
+        @UniqueConstraint(columnNames = {"email"})
+})
 public class User extends PanacheEntityBase {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     public UUID id;
 
+    @Column(nullable = false)
     public String username;
-    public String password;
-    public String email;
-    public Status status;
 
-    // Default constructor
+    @Column(nullable = false)
+    public String passwordHash; // simpan HASH, bukan plaintext
+
+    @Column(nullable = false)
+    public String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    public Status status = Status.Active;
+
     public User() {
     }
 
-    // Constructor with parameters
-    public User(String username, String password, String email) {
+    public User(String username, String aDefault, String email) {
         this.username = username;
-        this.password = password;
+        this.passwordHash = aDefault;
         this.email = email;
-        this.status = Status.Banned; // Default status
     }
-
-    // Getters and setters can be added if needed
 }
