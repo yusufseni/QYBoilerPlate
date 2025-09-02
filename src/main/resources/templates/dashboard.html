@@ -2,14 +2,25 @@
     {#title}Dashboard{/title}
 
     {#content}
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card shadow-sm mb-4">
-                    <div class="card-body">
-                        <h3 class="card-title">Selamat datang, {user.username}!</h3>
-                        <p>Email: <strong>{user.email}</strong></p>
-                        <p>Status: <span class="badge bg-info">{user.status}</span></p>
-                        <a href="/logout" class="btn btn-outline-danger">Logout</a>
+        <div class="container">
+            <h1 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">Welcome, {user.username}</h1>
+
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow rounded mb-4" style="background-color:#1e1e1e; border: 2px solid #f0ad4e;">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning">Profile Information</h5>
+                            <p class="card-text" style="color:#f5f5f5;"><strong>Email:</strong> {user.email}</p>
+                            <p class="card-text" style="color:#f5f5f5;"><strong>Status:</strong> {user.status}</p>
+                            <a href="/logout" class="btn mt-3 w-100" style="background-color:#f0ad4e; color:#121212; font-weight:bold;">Logout</a>
+                        </div>
+                    </div>
+
+                    <div class="card shadow rounded mb-4" style="background-color:#1e1e1e; border: 2px solid #f0ad4e;">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning">Gym Dashboard</h5>
+                            <p class="card-text" style="color:#f5f5f5;">Di sini bisa ditambahkan modul latihan, statistik, atau jadwal kelas.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -18,7 +29,7 @@
 
     {#scripts}
         <script>
-            console.log("Dashboard loaded");
+            console.log("Dashboard loaded for user: {user.username}");
         </script>
     {/scripts}
 {/include}

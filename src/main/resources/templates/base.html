@@ -12,14 +12,15 @@
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
             crossorigin="anonymous">
 
-    {#insert headContent}{/insert}
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="/css/style.css">
 
-    <script>console.info("base loaded")</script>
+    {#insert headContent}{/insert}
 </head>
 <body class="d-flex flex-column min-vh-100">
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand" href="/">Ifighter</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -42,20 +43,18 @@
 </main>
 
 <!-- Footer -->
-<footer class="bg-light text-center py-3 mt-auto border-top">
+<footer class="text-center py-3 mt-auto border-top">
     <div class="container">
         <small class="text-muted">&copy; 2025 Ifighter</small>
     </div>
 </footer>
 
-<!-- Bootstrap 5 JS Bundle (with Popper) -->
+<!-- Bootstrap JS Bundle -->
 <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
 
 {#insert scripts}{/insert}
-
-<script>console.info("base ended")</script>
 </body>
 </html>
