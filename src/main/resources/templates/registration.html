@@ -6,8 +6,10 @@
             <form action="/registration" method="post" class="p-5 rounded shadow" style="background-color:#1e1e1e; width: 100%; max-width: 450px; border: 2px solid #f0ad4e;">
                 <h1 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">Create Account</h1>
 
-                {#if msg}
-                    <p class="msg-error">{msg}</p>
+                {#if flash && flash.type && flash.text}
+                    <div class="alert alert-{flash.type.name().toLowerCase()}">
+                        {flash.text}
+                    </div>
                 {/if}
 
                 <div class="mb-3">

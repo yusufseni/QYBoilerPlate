@@ -6,8 +6,10 @@
             <form action="/login" method="post" class="p-4 rounded shadow" style="background-color:#1e1e1e; width: 100%; max-width: 400px;">
                 <h1 class="text-center mb-4" style="color:#f0ad4e;">Login</h1>
 
-                {#if msg}
-                    <p class="msg-error">{msg}</p>
+                {#if flash && flash.type && flash.text}
+                    <div class="alert alert-{flash.type.name().toLowerCase()}">
+                        {flash.text}
+                    </div>
                 {/if}
 
                 <div class="mb-3">
