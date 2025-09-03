@@ -2,7 +2,9 @@ package com.yoesoff.plate.service;
 
 import com.yoesoff.plate.entity.Session;
 import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.enums.OrganizationType;
 import com.yoesoff.plate.enums.Status;
+import com.yoesoff.plate.enums.Themes;
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.runtime.util.StringUtil;
 import io.quarkus.elytron.security.common.BcryptUtil;
@@ -31,10 +33,12 @@ public class AuthService {
     public User register(String username, String email, String plainPassword) {
         String hash = BcryptUtil.bcryptHash(plainPassword);
         User u = new User();
+        u.organizationType = OrganizationType.PERSONAL;
         u.username = username;
         u.email = email;
         u.passwordHash = hash;
-        u.status = Status.Active;
+        u.status = Status.ACTIVE;
+        u.themes = Themes.DARK;
         u.persist();
         return u;
     }
@@ -42,7 +46,7 @@ public class AuthService {
     public Optional<User> authenticate(String username, String plainPassword) {
         User u = User.find("username", username).firstResult();
         if (u == null) return Optional.empty();
-        if (u.status != Status.Active) return Optional.empty();
+        if (u.status != Status.ACTIVE) return Optional.empty();
         return BcryptUtil.matches(plainPassword, u.passwordHash) ? Optional.of(u) : Optional.empty();
     }
 
