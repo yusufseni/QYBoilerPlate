@@ -104,3 +104,57 @@ p.msg-error {
     text-align: center;
     margin-bottom: 1rem;
 }
+
+/* Variasi warna sesuai type */
+.alert-info {
+    background: rgba(0, 123, 255, 0.1);
+    border: 1px solid #0d6efd;
+    color: #0d6efd;
+    box-shadow: 0 0 12px rgba(13, 110, 253, 0.7);
+}
+
+.alert-success {
+    background-color: rgba(76, 175, 80, 0.1); /* hijau lembut transparan */
+    border: 1px solid #4CAF50;                /* hijau utama */
+    color: #81c784;                           /* teks hijau soft */
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.alert-warning {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid #ffc107;
+    color: #ffc107;
+    box-shadow: 0 0 12px rgba(255, 193, 7, 0.7);
+}
+
+.alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    box-shadow: 0 0 12px rgba(220, 53, 69, 0.7);
+}
+
+/* Animasi masuk */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hilang elegan */
+.flash-hide {
+    opacity: 0;
+    transform: translateY(-20px);
+}

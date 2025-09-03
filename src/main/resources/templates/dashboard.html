@@ -4,20 +4,17 @@
     {#content}
         <div class="container">
 
-            {#if flash && flash.type && flash.text}
-                <div class="alert alert-{flash.type.name().toLowerCase()} text-center fw-bold"
-                     style="border-radius: 12px; font-family: 'Orbitron', sans-serif;">
-                    {flash.text}
-                </div>
-            {/if}
-
             <h1 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">
                 Welcome, {user.username}
             </h1>
 
             <div class="row justify-content-center">
                 <div class="col-md-8">
-
+                    {#if flash && flash.type && flash.text}
+                        <div class="alert alert-{flash.type.name().toLowerCase()}">
+                            {flash.text}
+                        </div>
+                    {/if}
                     <!-- Profile Card -->
                     <div class="card shadow rounded mb-4" style="background-color:#1e1e1e; border: 2px solid #f0ad4e;">
                         <div class="card-body">

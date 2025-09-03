@@ -72,7 +72,8 @@ public class AuthResource {
                 true   // httpOnly
         );
 
-        return Response.seeOther(uriInfo.getBaseUriBuilder().path("dashboard").build())
+        return Response.seeOther(uriInfo.getBaseUriBuilder().path("dashboard").queryParam("type", "SUCCESS")
+                .queryParam("msg", "Selamat datang " + username).build())
                 .cookie(cookie)
                 .build();
     }
