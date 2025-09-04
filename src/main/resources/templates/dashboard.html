@@ -2,8 +2,7 @@
     {#title}Dashboard{/title}
 
     {#content}
-        <div class="container">
-
+        <div class="container position-relative" style="z-index:2;">
             <h1 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">
                 Welcome, {user.username}
             </h1>
@@ -15,45 +14,73 @@
                             {flash.text}
                         </div>
                     {/if}
+
                     <!-- Profile Card -->
                     <div class="card shadow rounded mb-4" style="background-color:#1e1e1e; border: 2px solid #f0ad4e;">
                         <div class="card-body">
-                            <h5 class="card-title text-warning">Profile Information</h5>
-                            <p class="card-text" style="color:#f5f5f5;"><strong>Email:</strong> {user.email}</p>
-                            <p class="card-text" style="color:#f5f5f5;"><strong>Status:</strong> {user.status}</p>
-                            <p class="card-text" style="color:#f5f5f5;"><strong>Organization Type:</strong> {user.organizationType}</p>
-                            <p class="card-text" style="color:#f5f5f5;"><strong>Theme:</strong> {user.themes}</p>
-                            <p class="card-text" style="color:#f5f5f5;">
-                                <strong>Location:</strong>
-                                {#if user.latitude != null && user.longitude != null}
-                                    {user.latitude}, {user.longitude}
-                                {#else}
-                                    <em>Not set</em>
-                                {/if}
-                            </p>
-                            <a href="/logout" class="btn mt-3 w-100"
-                               style="background-color:#f0ad4e; color:#121212; font-weight:bold;">
-                                Logout
-                            </a>
+                            <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start">
+
+                                <!-- Foto profil -->
+                                <div class="me-md-4 mb-3 mb-md-0 d-flex justify-content-center">
+                                    <img src="https://cdn.vectorstock.com/i/500p/29/52/faceless-male-avatar-in-hoodie-vector-56412952.jpg"
+                                         alt="Profile Photo"
+                                         class="rounded-circle"
+                                         style="width:120px; height:120px; object-fit:cover; border:3px solid #f0ad4e;">
+                                </div>
+
+                                <!-- Data user -->
+                                <div class="text-center text-md-start">
+                                    <h5 class="card-title text-warning">Profile Information</h5>
+                                    <p class="card-text text-light"><strong>Email:</strong> {user.email}</p>
+                                    <p class="card-text text-light"><strong>Status:</strong> {user.status}</p>
+                                    <p class="card-text text-light"><strong>Organization Type:</strong> {user.organizationType}</p>
+                                    <p class="card-text text-light"><strong>Theme:</strong> {user.themes}</p>
+                                    <p class="card-text text-light">
+                                        <strong>Location:</strong>
+                                        {#if user.latitude != null && user.longitude != null}
+                                            {user.latitude}, {user.longitude}
+                                        {#else}
+                                            <em>Not set</em>
+                                        {/if}
+                                    </p>
+                                    <a href="/logout" class="btn mt-2"
+                                       style="background-color:#f0ad4e; color:#121212; font-weight:bold;">
+                                        Logout
+                                    </a>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 
                     <!-- Dashboard Card -->
-                    <div class="card shadow rounded mb-4" style="background-color:#1e1e1e; border: 2px solid #f0ad4e;">
+                    <div class="card shadow rounded mb-4 dashboard-card">
                         <div class="card-body">
                             <h5 class="card-title text-warning">Gym Dashboard</h5>
-                            <p class="card-text" style="color:#f5f5f5;">
+                            <p class="card-text text-light">
                                 Modul latihan, statistik, atau jadwal kelas bisa ditambahkan di sini.
                             </p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     {/content}
 
     {#scripts}
+        <style>
+            .card {
+                background-color: rgba(30,30,30,0.9);
+                border: 2px solid #f0ad4e;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0 20px rgba(240, 173, 78, 0.8);
+            }
+        </style>
+
         <script>
             console.log("Dashboard loaded for user: {user.username}");
         </script>
