@@ -2,71 +2,99 @@ package com.yoesoff.plate.service;
 
 import com.yoesoff.plate.entity.Session;
 import com.yoesoff.plate.entity.User;
-import com.yoesoff.plate.enums.OrganizationType;
-import com.yoesoff.plate.enums.Status;
-import com.yoesoff.plate.enums.Themes;
-import io.quarkus.hibernate.orm.panache.Panache;
-import io.quarkus.runtime.util.StringUtil;
-import io.quarkus.elytron.security.common.BcryptUtil;
+import com.yoesoff.plate.enums.UserRole;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
+import io.quarkus.elytron.security.common.BcryptUtil;
+
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @ApplicationScoped
 public class AuthService {
 
-    public Optional<User> findByUsername(String username) {
-        return Optional.ofNullable(User.find("username", username).firstResult());
+    public Optional<User> authenticate(String username, String password) {
+        User user = User.find("username = ?1 and status = 'ACTIVE'", username).firstResult();
+        if (user != null && BcryptUtil.matches(password, user.passwordHash)) {
+            return Optional.of(user);
+        }
+        return Optional.empty();
     }
 
     public boolean usernameExists(String username) {
-        return User.count("username", username) > 0;
+        return User.count("username = ?1", username) > 0;
     }
 
     public boolean emailExists(String email) {
-        return User.count("email", email) > 0;
+        return User.count("email = ?1", email) > 0;
     }
 
-    public User register(String username, String email, String plainPassword) {
-        String hash = BcryptUtil.bcryptHash(plainPassword);
-        User u = new User();
-        u.organizationType = OrganizationType.PERSONAL;
-        u.username = username;
-        u.email = email;
-        u.passwordHash = hash;
-        u.status = Status.ACTIVE;
-        u.themes = Themes.DARK;
-        u.persist();
-        return u;
+    @Transactional
+    public User registerClient(String username, String email, String password,
+                               String firstName, String lastName, String phoneNumber) {
+        User user = new User();
+        user.username = username;
+        user.email = email;
+        user.passwordHash = BcryptUtil.bcryptHash(password);
+        user.role = UserRole.CLIENT;
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.phoneNumber = phoneNumber;
+        user.createdAt = LocalDateTime.now();
+        user.persist();
+        return user;
     }
 
-    public Optional<User> authenticate(String username, String plainPassword) {
-        User u = User.find("username", username).firstResult();
-        if (u == null) return Optional.empty();
-        if (u.status != Status.ACTIVE) return Optional.empty();
-        return BcryptUtil.matches(plainPassword, u.passwordHash) ? Optional.of(u) : Optional.empty();
+    @Transactional
+    public User registerFighter(String username, String email, String password,
+                                String firstName, String lastName, String phoneNumber,
+                                String fightName, String primaryDiscipline,
+                                String weightClass, String gym) {
+        User fighter = new User();
+        fighter.username = username;
+        fighter.email = email;
+        fighter.passwordHash = BcryptUtil.bcryptHash(password); // Use BcryptUtil
+        fighter.role = UserRole.FIGHTER;
+        fighter.firstName = firstName;
+        fighter.lastName = lastName;
+        fighter.phoneNumber = phoneNumber;
+        fighter.fightName = fightName;
+        fighter.primaryDiscipline = primaryDiscipline;
+        fighter.weightClass = weightClass;
+        fighter.gym = gym;
+        fighter.createdAt = LocalDateTime.now();
+        fighter.persist();
+        return fighter;
     }
 
-    public Session createSession(User user, int daysValid) {
-        Session s = new Session();
-        s.user = user;
-        s.token = UUID.randomUUID().toString().replace("-", "");
-        s.expiresAt = Instant.now().plus(daysValid, ChronoUnit.DAYS);
-        s.persist();
-        return s;
+
+    // Legacy method for backward compatibility
+    @Transactional
+    public User register(String username, String email, String password) {
+        return registerClient(username, email, password, null, null, null);
+    }
+
+    @Transactional
+    public Session createSession(User user, int expiryDays) {
+        Session session = new Session();
+        session.user = user;
+        session.token = UUID.randomUUID().toString().replace("-", "");
+        session.createdAt = Instant.now();
+        session.expiresAt = Instant.now().plusSeconds(expiryDays * 24 * 3600L);
+        session.persist();
+        return session;
     }
 
     public Optional<User> findUserByToken(String token) {
-        Session s = Session.find("token = ?1 and expiresAt > ?2", token, Instant.now()).firstResult();
-        return Optional.ofNullable(s != null ? s.user : null);
+        Session session = Session.find("token = ?1 and expiresAt > ?2", token, Instant.now()).firstResult();
+        return session != null ? Optional.of(session.user) : Optional.empty();
     }
 
+    @Transactional
     public void deleteSession(String token) {
-        Panache.getEntityManager().createQuery("delete from Session s where s.token = :t")
-                .setParameter("t", token)
-                .executeUpdate();
+        Session.delete("token = ?1", token);
     }
 }

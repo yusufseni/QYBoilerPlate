@@ -1,8 +1,13 @@
+
+
 package com.yoesoff.plate.enums.location;
 
 public enum IndonesiaProvinces {
     ACEH("Aceh"),
     SUMATERA_UTARA("Sumatera Utara"),
+
+
+
     SUMATERA_BARAT("Sumatera Barat"),
     RIAU("Riau"),
     JAMBI("Jambi"),
