@@ -13,3 +13,4 @@ public enum OrganizationType {
     SHOOTING_CLUB, // A club that provides shooting training
     GENERAL_SPORTS_FACILITY // A facility that provides general sports training
 }
+
