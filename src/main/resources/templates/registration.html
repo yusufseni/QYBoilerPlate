@@ -7,7 +7,7 @@
               class="p-5 rounded shadow position-relative"
               style="background-color:rgba(30,30,30,0.85); width: 100%; max-width: 500px; border: 2px solid #f0ad4e; z-index: 2;">
 
-            <h1 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">Create Account</h1>
+            <h3 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">Create Account</h3>
 
             {#if flash && flash.type && flash.text}
                 <div class="alert alert-{flash.type.name().toLowerCase()}">
@@ -16,6 +16,16 @@
             {/if}
 
             <div class="row">
+                <div class="mb-3 col-md-12">
+                    <label for="organizationType" class="form-label" style="color:#f5f5f5;">Organization Type</label>
+                    <select id="organizationType" name="organizationType" class="form-control" required style="text-transform: capitalize;">
+                        <option value="">Select organization type</option>
+                        {#for orgType in organizationTypes}
+                            <option value="{orgType.name}">{orgType.name.replace('_', ' ').toLowerCase()}</option>
+                        {/for}
+                    </select>
+                </div>
+
                 <div class="mb-3 col-md-6">
                     <label for="username" class="form-label" style="color:#f5f5f5;">Username</label>
                     <input type="text" id="username" name="username" class="form-control" required>
@@ -52,29 +62,6 @@
 
     {#scripts}
         <style>
-            body {
-                margin: 0;
-                height: 100vh;
-                font-family: Arial, sans-serif;
-                background: url("https://cdn.pixabay.com/photo/2011/12/13/17/07/earth-11048_960_720.jpg") repeat-x;
-                background-size: cover;
-                animation: earth-spin 60s linear infinite;
-                position: relative;
-            }
-            @keyframes earth-spin {
-                from { background-position: 0 0; }
-                to { background-position: -2000px 0; }
-            }
-            body::after {
-                content: "";
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.6);
-                z-index: 0;
-            }
         </style>
     {/scripts}
 {/include}

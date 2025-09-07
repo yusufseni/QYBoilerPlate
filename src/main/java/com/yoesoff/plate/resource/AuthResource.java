@@ -2,6 +2,7 @@ package com.yoesoff.plate.resource;
 
 import com.yoesoff.plate.dto.FlashMessage;
 import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.enums.OrganizationType;
 import com.yoesoff.plate.enums.UserRole;
 import com.yoesoff.plate.service.AuthService;
 import io.quarkus.qute.Location;
@@ -86,7 +87,10 @@ public class AuthResource {
     @Path("registration")
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance registrationPage(@QueryParam("type") String type, @QueryParam("msg") String msg) {
-        return registration.data("flash", new FlashMessage(parseType(type), msg));
+        Map<String, Object> data = new HashMap<>();
+        data.put("flash", new FlashMessage(parseType(type), msg));
+        data.put("organizationTypes", OrganizationType.values());
+        return registration.data(data);
     }
 
     @POST
@@ -94,6 +98,7 @@ public class AuthResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Transactional
     public Response doRegister(
+            @RestForm OrganizationType organizationType,
             @RestForm String username,
             @RestForm String email,
             @RestForm String password,
@@ -124,7 +129,7 @@ public class AuthResource {
             return Response.seeOther(uri).build();
         }
 
-        var user = auth.registerClient(username, email, password, firstName, lastName, phoneNumber);
+        var user = auth.registerClient(organizationType, username, email, password, firstName, lastName, phoneNumber);
         URI uri = uriInfo.getBaseUriBuilder().path("login")
                 .queryParam("type", "SUCCESS")
                 .queryParam("msg", "Registration successful, please login").build();

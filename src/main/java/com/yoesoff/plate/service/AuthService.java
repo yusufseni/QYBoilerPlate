@@ -2,6 +2,7 @@ package com.yoesoff.plate.service;
 
 import com.yoesoff.plate.entity.Session;
 import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.enums.OrganizationType;
 import com.yoesoff.plate.enums.UserRole;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -33,9 +34,10 @@ public class AuthService {
     }
 
     @Transactional
-    public User registerClient(String username, String email, String password,
+    public User registerClient(OrganizationType organizationType, String username, String email, String password,
                                String firstName, String lastName, String phoneNumber) {
         User user = new User();
+        user.organizationType = organizationType != null ? organizationType : OrganizationType.PERSONAL;
         user.username = username;
         user.email = email;
         user.passwordHash = BcryptUtil.bcryptHash(password);
@@ -68,13 +70,6 @@ public class AuthService {
         fighter.createdAt = LocalDateTime.now();
         fighter.persist();
         return fighter;
-    }
-
-
-    // Legacy method for backward compatibility
-    @Transactional
-    public User register(String username, String email, String password) {
-        return registerClient(username, email, password, null, null, null);
     }
 
     @Transactional

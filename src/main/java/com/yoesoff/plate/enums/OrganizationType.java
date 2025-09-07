@@ -7,6 +7,7 @@ package com.yoesoff.plate.enums;
 public enum OrganizationType {
     PERSONAL, // Just a single person
     COMMUNITY, // A group of people
+    SANCTIONING_BODY, // An organization that sanctions fights
     FITNESS_GYM, // A gym that provides fitness training
     MARTIAL_ARTS_GYM, // A gym that provides martial arts training
     GYMNASTICS_CENTER, // A gym that provides gymnastics training
