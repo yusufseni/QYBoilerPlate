@@ -1,11 +1,11 @@
+<!-- registration.html -->
 {#include base.html}
     {#title}Registration{/title}
 
     {#content}
-        <!-- Form Register -->
         <form action="/registration" method="post"
               class="p-5 rounded shadow position-relative"
-              style="background-color:rgba(30,30,30,0.85); width: 100%; max-width: 400px; border: 2px solid #f0ad4e; z-index: 2;">
+              style="background-color:rgba(30,30,30,0.85); width: 100%; max-width: 500px; border: 2px solid #f0ad4e; z-index: 2;">
 
             <h1 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">Create Account</h1>
 
@@ -15,25 +15,37 @@
                 </div>
             {/if}
 
-            <div class="mb-3">
-                <label for="username" class="form-label" style="color:#f5f5f5;">Username</label>
-                <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="email" class="form-label" style="color:#f5f5f5;">Email</label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label" style="color:#f5f5f5;">Password</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="username" class="form-label" style="color:#f5f5f5;">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="email" class="form-label" style="color:#f5f5f5;">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="password" class="form-label" style="color:#f5f5f5;">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="firstName" class="form-label" style="color:#f5f5f5;">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="form-control">
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="lastName" class="form-label" style="color:#f5f5f5;">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" class="form-control">
+                </div>
+                <div class="mb-3 col-md-6">
+                    <label for="phoneNumber" class="form-label" style="color:#f5f5f5;">Phone Number</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control">
+                </div>
             </div>
 
             <button type="submit" class="btn w-100" style="background-color:#f0ad4e; color:#121212; font-weight:bold;">Register</button>
 
             <p class="text-center mt-3" style="color:#f5f5f5;">
-                Sudah punya akun? <a href="/login" style="color:#ffd700;">Login</a>
+                Already have an account? <a href="/login" style="color:#ffd700;">Login</a>
             </p>
         </form>
     {/content}
@@ -49,16 +61,10 @@
                 animation: earth-spin 60s linear infinite;
                 position: relative;
             }
-
             @keyframes earth-spin {
-                from {
-                    background-position: 0 0;
-                }
-                to {
-                    background-position: -2000px 0;
-                }
+                from { background-position: 0 0; }
+                to { background-position: -2000px 0; }
             }
-
             body::after {
                 content: "";
                 position: fixed;
@@ -70,9 +76,5 @@
                 z-index: 0;
             }
         </style>
-
-        <script>
-            console.log("Registration page loaded");
-        </script>
     {/scripts}
 {/include}
