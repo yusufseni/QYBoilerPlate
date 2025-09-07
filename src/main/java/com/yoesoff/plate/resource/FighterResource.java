@@ -1,12 +1,11 @@
 package com.yoesoff.plate.resource;
 
 import com.yoesoff.plate.dto.FlashMessage;
-import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.entity.UserEntity;
 import com.yoesoff.plate.service.AuthService;
 import com.yoesoff.plate.service.FighterService;
 import io.quarkus.qute.Location;
 import io.quarkus.qute.Template;
-import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -30,7 +29,7 @@ public class FighterResource {
     @Inject AuthService auth;
     @Inject FighterService fighterService;
 
-    private Optional<User> currentUser(@CookieParam(SESSION_COOKIE) String token) {
+    private Optional<UserEntity> currentUser(@CookieParam(SESSION_COOKIE) String token) {
         if (token == null || token.isBlank()) return Optional.empty();
         return auth.findUserByToken(token);
     }
@@ -50,22 +49,22 @@ public class FighterResource {
                                 @Context UriInfo uriInfo,
                                 @QueryParam("type") String type,
                                 @QueryParam("msg") String msg) {
-        Optional<User> userOpt = currentUser(token);
+        Optional<UserEntity> userOpt = currentUser(token);
         if (userOpt.isEmpty()) {
             return redirectToLogin(uriInfo, "Please login first");
         }
 
-        User user = userOpt.get();
-        if (!user.isFighter()) {
+        UserEntity userEntity = userOpt.get();
+        if (!userEntity.isFighter()) {
             URI uri = uriInfo.getBaseUriBuilder().path("dashboard").build();
             return Response.seeOther(uri).build();
         }
 
         Map<String, Object> data = new HashMap<>();
-        data.put("fighter", user);
-        data.put("fightRecords", user.fightRecords != null ? user.fightRecords : java.util.List.of());
-        data.put("services", user.services != null ? user.services : java.util.List.of());
-        data.put("reviews", user.receivedReviews != null ? user.receivedReviews : java.util.List.of());
+        data.put("fighter", userEntity);
+        data.put("fightRecords", userEntity.fightRecordEntities != null ? userEntity.fightRecordEntities : java.util.List.of());
+        data.put("services", userEntity.services != null ? userEntity.services : java.util.List.of());
+        data.put("reviews", userEntity.receivedReviews != null ? userEntity.receivedReviews : java.util.List.of());
         data.put("flash", new FlashMessage(parseType(type), msg));
 
         return Response.ok(fighterProfile.data(data)).build();
@@ -77,14 +76,14 @@ public class FighterResource {
     @Path("profile/{username}")
     @Produces(MediaType.TEXT_HTML)
     public Response publicProfile(@PathParam("username") String username) {
-        User fighter = fighterService.findFighterByUsername(username);
+        UserEntity fighter = fighterService.findFighterByUsername(username);
         if (fighter == null || !fighter.isFighter()) {
             throw new NotFoundException("Fighter not found");
         }
 
         Map<String, Object> data = new HashMap<>();
         data.put("fighter", fighter);
-        data.put("fightRecords", fighter.fightRecords);
+        data.put("fightRecords", fighter.fightRecordEntities);
         data.put("services", fighter.services.stream().filter(s -> s.isActive).toList());
         data.put("reviews", fighter.receivedReviews);
         data.put("averageRating", fighterService.getAverageRating(fighter));
@@ -106,14 +105,14 @@ public class FighterResource {
             return redirectToLogin(uriInfo, "Please login first");
         }
 
-        User user = userOpt.get();
-        if (!user.isFighter()) {
+        UserEntity userEntity = userOpt.get();
+        if (!userEntity.isFighter()) {
             URI uri = uriInfo.getBaseUriBuilder().path("dashboard").build();
             return Response.seeOther(uri).build();
         }
 
         Map<String, Object> data = new HashMap<>();
-        data.put("fighter", user);
+        data.put("fighter", userEntity);
         data.put("flash", new FlashMessage(parseType(type), msg));
 
         return Response.ok(fighterEdit.data(data)).build();
@@ -140,7 +139,7 @@ public class FighterResource {
             return redirectToLogin(uriInfo, "Please login first");
         }
 
-        User fighter = userOpt.get();
+        UserEntity fighter = userOpt.get();
         if (!fighter.isFighter()) {
             URI uri = uriInfo.getBaseUriBuilder().path("dashboard").build();
             return Response.seeOther(uri).build();
@@ -169,7 +168,7 @@ public class FighterResource {
             return redirectToLogin(uriInfo, "Please login first");
         }
 
-        User fighter = userOpt.get();
+        UserEntity fighter = userOpt.get();
         if (!fighter.isFighter()) {
             URI uri = uriInfo.getBaseUriBuilder().path("dashboard").build();
             return Response.seeOther(uri).build();
@@ -196,7 +195,7 @@ public class FighterResource {
             return redirectToLogin(uriInfo, "Please login first");
         }
 
-        User fighter = userOpt.get();
+        UserEntity fighter = userOpt.get();
         if (!fighter.isFighter()) {
             URI uri = uriInfo.getBaseUriBuilder().path("dashboard").build();
             return Response.seeOther(uri).build();

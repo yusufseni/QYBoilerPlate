@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "cities")
-public class City extends PanacheEntityBase {
+public class CityEntity extends PanacheEntityBase {
 
     @Id
     @GeneratedValue
@@ -19,11 +19,11 @@ public class City extends PanacheEntityBase {
     @Column(nullable = false, length = 100)
     public String province;
 
-    public static City findByName(String name) {
+    public static CityEntity findByName(String name) {
         return find("name", name).firstResult();
     }
 
-    public static City findByProvince(String province) {
+    public static CityEntity findByProvince(String province) {
         return find("province", province).firstResult();
     }
 }

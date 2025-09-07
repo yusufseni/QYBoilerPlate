@@ -1,19 +1,19 @@
 package com.yoesoff.plate.repository;
 
-import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.entity.UserEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 @ApplicationScoped
-public class UserRepository implements PanacheRepository<User> {
-    public List<User> findPaged(int offset, int size) {
+public class UserRepository implements PanacheRepository<UserEntity> {
+    public List<UserEntity> findPaged(int offset, int size) {
         int page = offset / size;
         return findAll().page(Page.of(page, size)).list();
     }
 
-    public User findByUsername(String username) {
+    public UserEntity findByUsername(String username) {
         return find("username", username).firstResult();
     }
 }

@@ -21,7 +21,7 @@ import java.util.UUID;
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"})
 })
-public class User extends PanacheEntityBase {
+public class UserEntity extends PanacheEntityBase {
 
     @Id
     @GeneratedValue
@@ -79,7 +79,7 @@ public class User extends PanacheEntityBase {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
-    public City city;
+    public CityEntity cityEntity;
 
     // Fighter-specific fields (only populated if role = FIGHTER)
     public String fightName; // Professional fighting name
@@ -100,18 +100,18 @@ public class User extends PanacheEntityBase {
 
     // One-to-Many relationships for fighters
     @OneToMany(mappedBy = "fighter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    public List<FightRecord> fightRecords = new ArrayList<>();
+    public List<FightRecordEntity> fightRecordEntities = new ArrayList<>();
 
     @OneToMany(mappedBy = "fighter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<FighterServiceEntity> services = new ArrayList<>();
 
     @OneToMany(mappedBy = "fighter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    public List<Review> receivedReviews = new ArrayList<>();
+    public List<ReviewEntity> receivedReviews = new ArrayList<>();
 
     // Constructors
-    public User() {}
+    public UserEntity() {}
 
-    public User(String username, String passwordHash, String email) {
+    public UserEntity(String username, String passwordHash, String email) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;

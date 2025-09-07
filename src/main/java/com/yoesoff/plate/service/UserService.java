@@ -1,6 +1,6 @@
 package com.yoesoff.plate.service;
 
-import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.entity.UserEntity;
 import com.yoesoff.plate.dto.UserDTO;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -27,36 +27,36 @@ public class UserService {
     }
 
     public UserDTO findById(UUID id) {
-        User user = User.findById(id);
-        return user != null ? toDTO(user) : null;
+        UserEntity userEntity = UserEntity.findById(id);
+        return userEntity != null ? toDTO(userEntity) : null;
     }
 
     @Transactional
     public UserDTO create(UserDTO dto) {
-        User user = new User(dto.username, "default", dto.email);
-        user.persist();
-        return toDTO(user);
+        UserEntity userEntity = new UserEntity(dto.username, "default", dto.email);
+        userEntity.persist();
+        return toDTO(userEntity);
     }
 
     @Transactional
     public UserDTO update(UUID id, UserDTO dto) {
-        User user = User.findById(id);
-        if (user == null) return null;
-        user.username = dto.username;
-        user.email = dto.email;
-        return toDTO(user);
+        UserEntity userEntity = UserEntity.findById(id);
+        if (userEntity == null) return null;
+        userEntity.username = dto.username;
+        userEntity.email = dto.email;
+        return toDTO(userEntity);
     }
 
     @Transactional
     public boolean delete(UUID id) {
-        return User.deleteById(id);
+        return UserEntity.deleteById(id);
     }
 
-    private UserDTO toDTO(User user) {
+    private UserDTO toDTO(UserEntity userEntity) {
         UserDTO dto = new UserDTO();
-        dto.id = user.id;
-        dto.username = user.username;
-        dto.email = user.email;
+        dto.id = userEntity.id;
+        dto.username = userEntity.username;
+        dto.email = userEntity.email;
         return dto;
     }
 }

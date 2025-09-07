@@ -2,9 +2,9 @@
 package com.yoesoff.plate.service;
 
 import com.yoesoff.plate.dto.FighterProfileDTO;
-import com.yoesoff.plate.entity.Booking;
-import com.yoesoff.plate.entity.Review;
-import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.entity.BookingEntity;
+import com.yoesoff.plate.entity.ReviewEntity;
+import com.yoesoff.plate.entity.UserEntity;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
@@ -15,8 +15,8 @@ import java.util.List;
 @ApplicationScoped
 public class FighterService {
 
-    public User findFighterByUsername(String username) {
-        return User.find("username = ?1 and role = 'FIGHTER' and status = 'ACTIVE'", username).firstResult();
+    public UserEntity findFighterByUsername(String username) {
+        return UserEntity.find("username = ?1 and role = 'FIGHTER' and status = 'ACTIVE'", username).firstResult();
     }
 
     public List<FighterProfileDTO> searchFighters(String discipline, String city, String serviceType, int page, int size) {
@@ -30,7 +30,7 @@ public class FighterService {
         }
 
         // Execute query and convert to DTOs
-        List<User> fighters = User.find(query.toString(),
+        List<UserEntity> fighters = UserEntity.find(query.toString(),
                         discipline != null ? "%" + discipline + "%" : null,
                         city != null ? "%" + city + "%" : null)
                 .page(page, size)
@@ -42,7 +42,7 @@ public class FighterService {
     }
 
     @Transactional
-    public void updateProfile(User fighter, String firstName, String lastName, String fightName,
+    public void updateProfile(UserEntity fighter, String firstName, String lastName, String fightName,
                               String bio, String primaryDiscipline, String weightClass,
                               String gym, String trainer, String achievements) {
         fighter.firstName = firstName;
@@ -58,19 +58,19 @@ public class FighterService {
         fighter.persist();
     }
 
-    public List<Booking> getFighterBookings(User fighter) {
-        return Booking.find("service.fighter = ?1", Sort.by("scheduledDateTime").descending(), fighter).list();
+    public List<BookingEntity> getFighterBookings(UserEntity fighter) {
+        return BookingEntity.find("service.fighter = ?1", Sort.by("scheduledDateTime").descending(), fighter).list();
     }
 
-    public Double getAverageRating(User fighter) {
-        return Review.getAverageRating(fighter);
+    public Double getAverageRating(UserEntity fighter) {
+        return ReviewEntity.getAverageRating(fighter);
     }
 
-    public Long getReviewCount(User fighter) {
-        return Review.getReviewCount(fighter);
+    public Long getReviewCount(UserEntity fighter) {
+        return ReviewEntity.getReviewCount(fighter);
     }
 
-    private FighterProfileDTO convertToProfileDTO(User fighter) {
+    private FighterProfileDTO convertToProfileDTO(UserEntity fighter) {
         FighterProfileDTO dto = new FighterProfileDTO();
         dto.id = fighter.id;
         dto.username = fighter.username;
@@ -85,7 +85,7 @@ public class FighterService {
         dto.averageRating = getAverageRating(fighter);
         dto.reviewCount = getReviewCount(fighter);
         dto.servicesCount = (long) fighter.services.size();
-        dto.cityName = fighter.city != null ? fighter.city.name : null;
+        dto.cityName = fighter.cityEntity != null ? fighter.cityEntity.name : null;
         return dto;
     }
 }

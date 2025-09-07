@@ -2,7 +2,7 @@ package com.yoesoff.plate.service;
 
 import com.yoesoff.plate.dto.FighterServiceDTO;
 import com.yoesoff.plate.entity.FighterServiceEntity;
-import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.entity.UserEntity;
 import com.yoesoff.plate.enums.ServiceType;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -57,7 +57,7 @@ public class FighterServiceService {
     }
 
     @Transactional
-    public FighterServiceDTO createService(User fighter, FighterServiceDTO dto) {
+    public FighterServiceDTO createService(UserEntity fighter, FighterServiceDTO dto) {
         FighterServiceEntity service = new FighterServiceEntity();
         service.fighter = fighter;
         service.serviceType = dto.serviceType;
@@ -73,9 +73,9 @@ public class FighterServiceService {
     }
 
     @Transactional
-    public FighterServiceDTO updateService(UUID id, FighterServiceDTO dto, User user) {
+    public FighterServiceDTO updateService(UUID id, FighterServiceDTO dto, UserEntity userEntity) {
         FighterServiceEntity service = FighterServiceEntity.findById(id);
-        if (service == null || !service.fighter.equals(user)) {
+        if (service == null || !service.fighter.equals(userEntity)) {
             return null;
         }
 
@@ -92,9 +92,9 @@ public class FighterServiceService {
     }
 
     @Transactional
-    public boolean deleteService(UUID id, User user) {
+    public boolean deleteService(UUID id, UserEntity userEntity) {
         FighterServiceEntity service = FighterServiceEntity.findById(id);
-        if (service == null || !service.fighter.equals(user)) {
+        if (service == null || !service.fighter.equals(userEntity)) {
             return false;
         }
 
@@ -116,7 +116,7 @@ public class FighterServiceService {
         dto.fighterName = service.fighter.getDisplayName();
         dto.fighterUsername = service.fighter.username;
         dto.fighterDiscipline = service.fighter.primaryDiscipline;
-        dto.fighterCity = service.fighter.city != null ? service.fighter.city.name : null;
+        dto.fighterCity = service.fighter.cityEntity != null ? service.fighter.cityEntity.name : null;
         dto.createdAt = service.createdAt;
         return dto;
     }

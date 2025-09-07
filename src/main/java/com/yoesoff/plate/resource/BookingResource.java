@@ -2,7 +2,7 @@ package com.yoesoff.plate.resource;
 
 import com.yoesoff.plate.dto.BookingDTO;
 import com.yoesoff.plate.dto.BookingRequestDTO;
-import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.entity.UserEntity;
 import com.yoesoff.plate.enums.BookingStatus;
 import com.yoesoff.plate.service.AuthService;
 import com.yoesoff.plate.service.BookingService;
@@ -34,7 +34,7 @@ public class BookingResource {
             @QueryParam("size") @DefaultValue("20") int size,
             @CookieParam("SESSION") String token) {
 
-        Optional<User> userOpt = authService.findUserByToken(token);
+        Optional<UserEntity> userOpt = authService.findUserByToken(token);
         if (userOpt.isEmpty()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -49,7 +49,7 @@ public class BookingResource {
             @PathParam("id") UUID id,
             @CookieParam("SESSION") String token) {
 
-        Optional<User> userOpt = authService.findUserByToken(token);
+        Optional<UserEntity> userOpt = authService.findUserByToken(token);
         if (userOpt.isEmpty()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -67,7 +67,7 @@ public class BookingResource {
             BookingRequestDTO request,
             @CookieParam("SESSION") String token) {
 
-        Optional<User> userOpt = authService.findUserByToken(token);
+        Optional<UserEntity> userOpt = authService.findUserByToken(token);
         if (userOpt.isEmpty()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -83,7 +83,7 @@ public class BookingResource {
             @PathParam("id") UUID id,
             @CookieParam("SESSION") String token) {
 
-        Optional<User> userOpt = authService.findUserByToken(token);
+        Optional<UserEntity> userOpt = authService.findUserByToken(token);
         if (userOpt.isEmpty()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -104,7 +104,7 @@ public class BookingResource {
             @FormParam("reason") String reason,
             @CookieParam("SESSION") String token) {
 
-        Optional<User> userOpt = authService.findUserByToken(token);
+        Optional<UserEntity> userOpt = authService.findUserByToken(token);
         if (userOpt.isEmpty()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -125,7 +125,7 @@ public class BookingResource {
             @FormParam("notes") String notes,
             @CookieParam("SESSION") String token) {
 
-        Optional<User> userOpt = authService.findUserByToken(token);
+        Optional<UserEntity> userOpt = authService.findUserByToken(token);
         if (userOpt.isEmpty()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }

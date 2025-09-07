@@ -1,7 +1,7 @@
 package com.yoesoff.plate.resource;
 
 import com.yoesoff.plate.dto.FighterServiceDTO;
-import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.entity.UserEntity;
 import com.yoesoff.plate.enums.ServiceType;
 import com.yoesoff.plate.service.AuthService;
 import com.yoesoff.plate.service.FighterServiceService;
@@ -57,7 +57,7 @@ public class ServiceResource {
             FighterServiceDTO serviceDTO,
             @CookieParam("SESSION") String token) {
 
-        Optional<User> userOpt = authService.findUserByToken(token);
+        Optional<UserEntity> userOpt = authService.findUserByToken(token);
         if (userOpt.isEmpty() || !userOpt.get().isFighter()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -74,7 +74,7 @@ public class ServiceResource {
             FighterServiceDTO serviceDTO,
             @CookieParam("SESSION") String token) {
 
-        Optional<User> userOpt = authService.findUserByToken(token);
+        Optional<UserEntity> userOpt = authService.findUserByToken(token);
         if (userOpt.isEmpty()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
@@ -93,7 +93,7 @@ public class ServiceResource {
             @PathParam("id") UUID id,
             @CookieParam("SESSION") String token) {
 
-        Optional<User> userOpt = authService.findUserByToken(token);
+        Optional<UserEntity> userOpt = authService.findUserByToken(token);
         if (userOpt.isEmpty()) {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }

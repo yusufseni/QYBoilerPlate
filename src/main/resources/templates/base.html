@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{#insert title}Default Title{/insert}</title>
+    <title>{#insert title}Ifighter - Professional Fighter Platform{/insert}</title>
 
     <!-- Bootstrap 5 CSS -->
     <link
@@ -23,7 +23,7 @@
 <nav class="navbar navbar-expand-lg"
      style="background-color:#121212; border-bottom:2px solid #f0ad4e; z-index:2;">
     <div class="container">
-        <a class="navbar-brand fw-bold text-warning" href="/">Ifighter</a>
+        <a class="navbar-brand fw-bold text-warning d-none d-lg-block navbar-ilogo" href="/">Ifighter</a>
 
         <!-- Toggle button -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -35,14 +35,18 @@
         <!-- Menu -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-light hover-gold" href="/dashboard">Dashboard</a>
-                </li>
+                <!-- Non-authenticated menu -->
                 <li class="nav-item">
                     <a class="nav-link text-light hover-gold" href="/login">Login</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light hover-gold" href="/registration">Register</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light hover-gold" href="#" id="registerDropdown" role="button" data-bs-toggle="dropdown">
+                        Register
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                        <li><a class="dropdown-item" href="/registration">As an Organization</a></li>
+                        <li><a class="dropdown-item" href="/fighter/registration">As Fighter</a></li>
+                    </ul>
                 </li>
             </ul>
         </div>

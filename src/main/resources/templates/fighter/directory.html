@@ -1,0 +1,116 @@
+<!-- fighter-directory.html -->
+{#include base.html}
+    {#title}Fighter Directory{/title}
+
+    {#content}
+        <div class="container position-relative" style="z-index:2;">
+            <div class="text-center mb-5">
+                <h1 style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">Fighter Directory</h1>
+                <p class="text-light">Find professional fighters and trainers in your area</p>
+            </div>
+
+            <!-- Search Filters -->
+            <div class="card shadow rounded mb-4" style="background-color: rgba(30,30,30,0.95); border: 2px solid #f0ad4e;">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="discipline" class="form-label text-light">Discipline</label>
+                            <select class="form-control" name="discipline" id="discipline">
+                                <option value="">All Disciplines</option>
+                                <option value="MMA" {selectedDiscipline == 'MMA' ? 'selected' : ''}>MMA</option>
+                                <option value="Boxing" {selectedDiscipline == 'Boxing' ? 'selected' : ''}>Boxing</option>
+                                <option value="Muay Thai" {selectedDiscipline == 'Muay Thai' ? 'selected' : ''}>Muay Thai</option>
+                                <option value="Brazilian Jiu-Jitsu" {selectedDiscipline == 'Brazilian Jiu-Jitsu' ? 'selected' : ''}>Brazilian Jiu-Jitsu</option>
+                                <option value="Kickboxing" {selectedDiscipline == 'Kickboxing' ? 'selected' : ''}>Kickboxing</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="city" class="form-label text-light">City</label>
+                            <input type="text" class="form-control" name="city" id="city" value="{selectedCity}" placeholder="Enter city">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="service" class="form-label text-light">Service Type</label>
+                            <select class="form-control" name="service" id="service">
+                                <option value="">All Services</option>
+                                <option value="PERSONAL_TRAINING" {selectedService == 'PERSONAL_TRAINING' ? 'selected' : ''}>Personal Training</option>
+                                <option value="GROUP_TRAINING" {selectedService == 'GROUP_TRAINING' ? 'selected' : ''}>Group Training</option>
+                                <option value="ONLINE_COACHING" {selectedService == 'ONLINE_COACHING' ? 'selected' : ''}>Online Coaching</option>
+                                <option value="NUTRITION_CONSULTING" {selectedService == 'NUTRITION_CONSULTING' ? 'selected' : ''}>Nutrition Consulting</option>
+                            </select>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn" style="background-color:#f0ad4e; color:#121212; font-weight:bold;">
+                                Search Fighters
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Fighter Grid -->
+            <div class="row">
+                {#if fighters.size() > 0}
+                    {#for fighter in fighters}
+                        <div class="col-md-4 col-lg-3 mb-4">
+                            <div class="card shadow fighter-card">
+                                <div class="card-body text-center">
+                                    <img src="{fighter.profileImageUrl ?: 'https://cdn.vectorstock.com/i/500p/29/52/faceless-male-avatar-in-hoodie-vector-56412952.jpg'}"
+                                         alt="Fighter Photo"
+                                         class="rounded-circle mb-3"
+                                         style="width:100px; height:100px; object-fit:cover; border:2px solid #f0ad4e;">
+
+                                    <h5 class="text-warning">{fighter.getDisplayName()}</h5>
+                                    <p class="text-light mb-1">{fighter.primaryDiscipline}</p>
+                                    {#if fighter.cityName}
+                                        <p class="text-muted small mb-2">{fighter.cityName}</p>
+                                    {/if}
+
+                                    {#if fighter.averageRating}
+                                        <div class="mb-2">
+                                            <span class="text-warning small">
+                                                ★ {fighter.averageRating} ({fighter.reviewCount})
+                                            </span>
+                                        </div>
+                                    {/if}
+
+                                    <div class="mb-3">
+                                        <small class="text-light">{fighter.servicesCount} services available</small>
+                                    </div>
+
+                                    <a href="/fighter/profile/{fighter.username}" class="btn btn-sm" style="background-color:#f0ad4e; color:#121212;">
+                                        View Profile
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {/for}
+                {#else}
+                    <div class="col-12 text-center">
+                        <div class="card shadow" style="background-color: rgba(30,30,30,0.95); border: 2px solid #f0ad4e;">
+                            <div class="card-body py-5">
+                                <h4 class="text-warning">No fighters found</h4>
+                                <p class="text-light">Try adjusting your search criteria</p>
+                            </div>
+                        </div>
+                    </div>
+                {/if}
+            </div>
+        </div>
+    {/content}
+
+    {#scripts}
+        <style>
+            .fighter-card {
+                background-color: rgba(30,30,30,0.95);
+                border: 2px solid #f0ad4e;
+                transition: all 0.3s ease;
+                height: 100%;
+            }
+
+            .fighter-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(240, 173, 78, 0.4);
+            }
+        </style>
+    {/scripts}
+{/include}

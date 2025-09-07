@@ -10,13 +10,13 @@ import java.util.UUID;
 @Table(name = "user_sessions", indexes = {
         @Index(columnList = "token", unique = true)
 })
-public class Session extends PanacheEntityBase {
+public class SessionEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue
     public UUID id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    public User user;
+    public UserEntity userEntity;
 
     @Column(nullable = false, unique = true, length = 64)
     public String token;

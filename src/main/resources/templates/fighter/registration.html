@@ -1,0 +1,134 @@
+<!-- fighter/registration.html -->
+{#include base.html}
+    {#title}Fighter Registration{/title}
+
+    {#content}
+        <div class="container position-relative" style="z-index:2;">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    {#if flash && flash.type && flash.text}
+                        <div class="alert alert-{flash.type.name().toLowerCase()}">
+                            {flash.text}
+                        </div>
+                    {/if}
+
+                    <form method="post" action="/fighter/registration" class="fighter-registration-form">
+                        <div class="text-center mb-4">
+                            <h1 style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">Fighter Registration</h1>
+                            <p class="text-light">Join the Ifighter community as a professional fighter</p>
+                        </div>
+
+                        <!-- Basic Info -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="firstName" class="form-label text-light">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" name="firstName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="lastName" class="form-label text-light">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" name="lastName" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label text-light">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label text-light">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label text-light">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label text-light">Phone Number</label>
+                            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber">
+                        </div>
+
+                        <!-- Fighter Specific Info -->
+                        <hr class="my-4" style="border-color: #f0ad4e;">
+                        <h5 class="text-warning mb-3">Fighter Information</h5>
+
+                        <div class="mb-3">
+                            <label for="fightName" class="form-label text-light">Fight Name</label>
+                            <input type="text" class="form-control" id="fightName" name="fightName" placeholder="e.g., The Thunder">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="primaryDiscipline" class="form-label text-light">Primary Discipline</label>
+                                    <select class="form-control" id="primaryDiscipline" name="primaryDiscipline" required>
+                                        <option value="">Select Discipline</option>
+                                        <option value="MMA">MMA</option>
+                                        <option value="Boxing">Boxing</option>
+                                        <option value="Muay Thai">Muay Thai</option>
+                                        <option value="Brazilian Jiu-Jitsu">Brazilian Jiu-Jitsu</option>
+                                        <option value="Karate">Karate</option>
+                                        <option value="Taekwondo">Taekwondo</option>
+                                        <option value="Kickboxing">Kickboxing</option>
+                                        <option value="Wrestling">Wrestling</option>
+                                        <option value="Judo">Judo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="weightClass" class="form-label text-light">Weight Class</label>
+                                    <select class="form-control" id="weightClass" name="weightClass">
+                                        <option value="">Select Weight Class</option>
+                                        <option value="Strawweight">Strawweight</option>
+                                        <option value="Flyweight">Flyweight</option>
+                                        <option value="Bantamweight">Bantamweight</option>
+                                        <option value="Featherweight">Featherweight</option>
+                                        <option value="Lightweight">Lightweight</option>
+                                        <option value="Welterweight">Welterweight</option>
+                                        <option value="Middleweight">Middleweight</option>
+                                        <option value="Light Heavyweight">Light Heavyweight</option>
+                                        <option value="Heavyweight">Heavyweight</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="gym" class="form-label text-light">Gym/Team</label>
+                            <input type="text" class="form-control" id="gym" name="gym" placeholder="Your gym or team">
+                        </div>
+
+                        <button type="submit" class="btn w-100 mt-3" style="background-color:#f0ad4e; color:#121212; font-weight:bold;">
+                            Register as Fighter
+                        </button>
+
+                        <div class="text-center mt-3">
+                            <p class="text-light">Already have an account? <a href="/login">Login here</a></p>
+                            <p class="text-light">Register as client? <a href="/registration">Client Registration</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {/content}
+
+    {#scripts}
+        <style>
+            .fighter-registration-form {
+                background-color: rgba(30,30,30,0.95);
+                padding: 2rem;
+                border-radius: 12px;
+                box-shadow: 0 0 20px rgba(240, 173, 78, 0.3);
+                border: 2px solid #f0ad4e;
+                max-width: none;
+            }
+        </style>
+    {/scripts}
+{/include}

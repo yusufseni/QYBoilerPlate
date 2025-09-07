@@ -5,9 +5,9 @@
     {#content}
         <form action="/registration" method="post"
               class="p-5 rounded shadow position-relative"
-              style="background-color:rgba(30,30,30,0.85); width: 100%; max-width: 500px; border: 2px solid #f0ad4e; z-index: 2;">
+              style="background-color:rgba(30,30,30,0.92); width: 100%; max-width: 500px; border: 2px solid #f0ad4e; z-index: 2; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);">
 
-            <h3 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">Create Account</h3>
+            <h3 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif; letter-spacing: 1px;">Create Account</h3>
 
             {#if flash && flash.type && flash.text}
                 <div class="alert alert-{flash.type.name().toLowerCase()}">
@@ -21,38 +21,49 @@
                     <select id="organizationType" name="organizationType" class="form-control" required style="text-transform: capitalize;">
                         <option value="">Select organization type</option>
                         {#for orgType in organizationTypes}
-                            <option value="{orgType.name}">{orgType.name.replace('_', ' ').toLowerCase()}</option>
+                            <option value="{orgType.name}">
+                                {orgType.name.replace('_', ' ').toLowerCase()}
+                            </option>
                         {/for}
                     </select>
                 </div>
 
                 <div class="mb-3 col-md-6">
                     <label for="username" class="form-label" style="color:#f5f5f5;">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" required>
+                    <input type="text" id="username" name="username" class="form-control" required
+                           placeholder="Choose a username">
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="email" class="form-label" style="color:#f5f5f5;">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" required>
+                    <input type="email" id="email" name="email" class="form-control" required
+                           placeholder="your@email.com">
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="password" class="form-label" style="color:#f5f5f5;">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
+                    <input type="password" id="password" name="password" class="form-control" required
+                           placeholder="Create a password">
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="firstName" class="form-label" style="color:#f5f5f5;">First Name</label>
-                    <input type="text" id="firstName" name="firstName" class="form-control">
+                    <input type="text" id="firstName" name="firstName" class="form-control"
+                           placeholder="Your first name">
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="lastName" class="form-label" style="color:#f5f5f5;">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" class="form-control">
+                    <input type="text" id="lastName" name="lastName" class="form-control"
+                           placeholder="Your last name">
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="phoneNumber" class="form-label" style="color:#f5f5f5;">Phone Number</label>
-                    <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control">
+                    <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control"
+                           placeholder="e.g. +62 812-3456-7890">
                 </div>
             </div>
 
-            <button type="submit" class="btn w-100" style="background-color:#f0ad4e; color:#121212; font-weight:bold;">Register</button>
+            <button type="submit" class="btn w-100"
+                    style="background: linear-gradient(90deg, #f0ad4e 0%, #ffd700 100%); color:#121212; font-weight:bold; border:none; box-shadow: 0 2px 8px rgba(240,173,78,0.2);">
+                Register
+            </button>
 
             <p class="text-center mt-3" style="color:#f5f5f5;">
                 Already have an account? <a href="/login" style="color:#ffd700;">Login</a>
@@ -62,6 +73,10 @@
 
     {#scripts}
         <style>
+            /* Add any additional styles for the registration page here */
         </style>
+        <script>
+            console.log("Registration page loaded");
+        </script>
     {/scripts}
 {/include}

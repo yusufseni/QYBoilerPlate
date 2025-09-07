@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "bookings")
-public class Booking extends PanacheEntityBase {
+public class BookingEntity extends PanacheEntityBase {
 
     @Id
     @GeneratedValue
@@ -23,7 +23,7 @@ public class Booking extends PanacheEntityBase {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
-    public User client;
+    public UserEntity client;
 
     @Column(nullable = false)
     @NotNull
@@ -52,7 +52,7 @@ public class Booking extends PanacheEntityBase {
     public LocalDateTime completedAt;
 
     // Getters for fighter convenience
-    public User getFighter() {
+    public UserEntity getFighter() {
         return service != null ? service.fighter : null;
     }
 }

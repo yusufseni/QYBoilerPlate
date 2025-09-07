@@ -1,9 +1,8 @@
 package com.yoesoff.plate.resource;
 
 import com.yoesoff.plate.dto.FlashMessage;
-import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.entity.UserEntity;
 import com.yoesoff.plate.enums.OrganizationType;
-import com.yoesoff.plate.enums.UserRole;
 import com.yoesoff.plate.service.AuthService;
 import io.quarkus.qute.Location;
 import io.quarkus.qute.Template;
@@ -32,7 +31,7 @@ public class AuthResource {
 
     @Inject AuthService auth;
 
-    private Optional<User> currentUser(@CookieParam(SESSION_COOKIE) String token) {
+    private Optional<UserEntity> currentUser(@CookieParam(SESSION_COOKIE) String token) {
         if (token == null || token.isBlank()) return Optional.empty();
         return auth.findUserByToken(token);
     }
@@ -57,7 +56,7 @@ public class AuthResource {
             return Response.seeOther(uri).build();
         }
 
-        Optional<User> userOpt = auth.authenticate(username, password);
+        Optional<UserEntity> userOpt = auth.authenticate(username, password);
         if (userOpt.isEmpty()) {
             URI uri = uriInfo.getBaseUriBuilder().path("login")
                     .queryParam("type", "DANGER")
@@ -138,7 +137,7 @@ public class AuthResource {
 
     // --- FIGHTER REGISTRATION ---
     @GET
-    @Path("fighter/registration")
+    @Path("fighter-registration")
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance fighterRegistrationPage(@QueryParam("type") String type, @QueryParam("msg") String msg) {
         return fighterRegistration.data("flash", new FlashMessage(parseType(type), msg));

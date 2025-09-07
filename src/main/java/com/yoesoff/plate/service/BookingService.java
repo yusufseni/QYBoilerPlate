@@ -2,9 +2,9 @@ package com.yoesoff.plate.service;
 
 import com.yoesoff.plate.dto.BookingDTO;
 import com.yoesoff.plate.dto.BookingRequestDTO;
-import com.yoesoff.plate.entity.Booking;
+import com.yoesoff.plate.entity.BookingEntity;
 import com.yoesoff.plate.entity.FighterServiceEntity;
-import com.yoesoff.plate.entity.User;
+import com.yoesoff.plate.entity.UserEntity;
 import com.yoesoff.plate.enums.BookingStatus;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -18,10 +18,10 @@ import java.util.UUID;
 @ApplicationScoped
 public class BookingService {
 
-    public List<BookingDTO> getUserBookings(User user, BookingStatus status, int page, int size) {
+    public List<BookingDTO> getUserBookings(UserEntity userEntity, BookingStatus status, int page, int size) {
         StringBuilder query = new StringBuilder();
 
-        if (user.isFighter()) {
+        if (userEntity.isFighter()) {
             query.append("service.fighter = ?1");
         } else {
             query.append("client = ?1");
@@ -31,132 +31,132 @@ public class BookingService {
             query.append(" and status = ?2");
         }
 
-        List<Booking> bookings = Booking.find(query.toString(),
+        List<BookingEntity> bookingEntities = BookingEntity.find(query.toString(),
                         Sort.by("scheduledDateTime").descending(),
-                        user, status)
+                        userEntity, status)
                 .page(page, size)
                 .list();
 
-        return bookings.stream()
+        return bookingEntities.stream()
                 .map(this::convertToDTO)
                 .toList();
     }
 
-    public BookingDTO findBookingById(UUID id, User user) {
-        Booking booking = Booking.findById(id);
-        if (booking == null) return null;
+    public BookingDTO findBookingById(UUID id, UserEntity userEntity) {
+        BookingEntity bookingEntity = BookingEntity.findById(id);
+        if (bookingEntity == null) return null;
 
         // Check if user has access to this booking
-        if (!booking.client.equals(user) && !booking.getFighter().equals(user)) {
+        if (!bookingEntity.client.equals(userEntity) && !bookingEntity.getFighter().equals(userEntity)) {
             return null;
         }
 
-        return convertToDTO(booking);
+        return convertToDTO(bookingEntity);
     }
 
     @Transactional
-    public BookingDTO createBooking(User client, BookingRequestDTO request) {
+    public BookingDTO createBooking(UserEntity client, BookingRequestDTO request) {
         FighterServiceEntity service = FighterServiceEntity.findById(request.serviceId);
         if (service == null || !service.isActive) {
             throw new IllegalArgumentException("Service not available");
         }
 
-        Booking booking = new Booking();
-        booking.service = service;
-        booking.client = client;
-        booking.scheduledDateTime = request.scheduledDateTime;
-        booking.durationMinutes = request.durationMinutes != null ?
+        BookingEntity bookingEntity = new BookingEntity();
+        bookingEntity.service = service;
+        bookingEntity.client = client;
+        bookingEntity.scheduledDateTime = request.scheduledDateTime;
+        bookingEntity.durationMinutes = request.durationMinutes != null ?
                 request.durationMinutes : service.durationMinutes;
-        booking.clientNotes = request.clientNotes;
-        booking.status = BookingStatus.PENDING;
-        booking.createdAt = LocalDateTime.now();
+        bookingEntity.clientNotes = request.clientNotes;
+        bookingEntity.status = BookingStatus.PENDING;
+        bookingEntity.createdAt = LocalDateTime.now();
 
         // Calculate total price
         BigDecimal hourlyRate = service.pricePerHour;
-        BigDecimal hours = BigDecimal.valueOf(booking.durationMinutes / 60.0);
-        booking.totalPrice = hourlyRate.multiply(hours);
+        BigDecimal hours = BigDecimal.valueOf(bookingEntity.durationMinutes / 60.0);
+        bookingEntity.totalPrice = hourlyRate.multiply(hours);
 
-        booking.persist();
-        return convertToDTO(booking);
+        bookingEntity.persist();
+        return convertToDTO(bookingEntity);
     }
 
     @Transactional
-    public BookingDTO confirmBooking(UUID id, User fighter) {
-        Booking booking = Booking.findById(id);
-        if (booking == null || !booking.getFighter().equals(fighter)) {
+    public BookingDTO confirmBooking(UUID id, UserEntity fighter) {
+        BookingEntity bookingEntity = BookingEntity.findById(id);
+        if (bookingEntity == null || !bookingEntity.getFighter().equals(fighter)) {
             return null;
         }
 
-        booking.status = BookingStatus.CONFIRMED;
-        booking.confirmedAt = LocalDateTime.now();
-        booking.persist();
+        bookingEntity.status = BookingStatus.CONFIRMED;
+        bookingEntity.confirmedAt = LocalDateTime.now();
+        bookingEntity.persist();
 
-        return convertToDTO(booking);
+        return convertToDTO(bookingEntity);
     }
 
     @Transactional
-    public BookingDTO cancelBooking(UUID id, User user, String reason) {
-        Booking booking = Booking.findById(id);
-        if (booking == null) return null;
+    public BookingDTO cancelBooking(UUID id, UserEntity userEntity, String reason) {
+        BookingEntity bookingEntity = BookingEntity.findById(id);
+        if (bookingEntity == null) return null;
 
         // Check if user can cancel this booking
-        if (!booking.client.equals(user) && !booking.getFighter().equals(user)) {
+        if (!bookingEntity.client.equals(userEntity) && !bookingEntity.getFighter().equals(userEntity)) {
             return null;
         }
 
-        booking.status = BookingStatus.CANCELLED;
-        booking.cancelledAt = LocalDateTime.now();
+        bookingEntity.status = BookingStatus.CANCELLED;
+        bookingEntity.cancelledAt = LocalDateTime.now();
 
-        if (booking.getFighter().equals(user)) {
-            booking.fighterNotes = reason;
+        if (bookingEntity.getFighter().equals(userEntity)) {
+            bookingEntity.fighterNotes = reason;
         } else {
-            booking.clientNotes = reason;
+            bookingEntity.clientNotes = reason;
         }
 
-        booking.persist();
-        return convertToDTO(booking);
+        bookingEntity.persist();
+        return convertToDTO(bookingEntity);
     }
 
     @Transactional
-    public BookingDTO completeBooking(UUID id, User fighter, String notes) {
-        Booking booking = Booking.findById(id);
-        if (booking == null || !booking.getFighter().equals(fighter)) {
+    public BookingDTO completeBooking(UUID id, UserEntity fighter, String notes) {
+        BookingEntity bookingEntity = BookingEntity.findById(id);
+        if (bookingEntity == null || !bookingEntity.getFighter().equals(fighter)) {
             return null;
         }
 
-        booking.status = BookingStatus.COMPLETED;
-        booking.completedAt = LocalDateTime.now();
-        booking.fighterNotes = notes;
-        booking.persist();
+        bookingEntity.status = BookingStatus.COMPLETED;
+        bookingEntity.completedAt = LocalDateTime.now();
+        bookingEntity.fighterNotes = notes;
+        bookingEntity.persist();
 
-        return convertToDTO(booking);
+        return convertToDTO(bookingEntity);
     }
 
-    private BookingDTO convertToDTO(Booking booking) {
+    private BookingDTO convertToDTO(BookingEntity bookingEntity) {
         BookingDTO dto = new BookingDTO();
-        dto.id = booking.id;
-        dto.scheduledDateTime = booking.scheduledDateTime;
-        dto.durationMinutes = booking.durationMinutes;
-        dto.totalPrice = booking.totalPrice;
-        dto.status = booking.status;
-        dto.clientNotes = booking.clientNotes;
-        dto.fighterNotes = booking.fighterNotes;
-        dto.createdAt = booking.createdAt;
-        dto.confirmedAt = booking.confirmedAt;
-        dto.cancelledAt = booking.cancelledAt;
-        dto.completedAt = booking.completedAt;
+        dto.id = bookingEntity.id;
+        dto.scheduledDateTime = bookingEntity.scheduledDateTime;
+        dto.durationMinutes = bookingEntity.durationMinutes;
+        dto.totalPrice = bookingEntity.totalPrice;
+        dto.status = bookingEntity.status;
+        dto.clientNotes = bookingEntity.clientNotes;
+        dto.fighterNotes = bookingEntity.fighterNotes;
+        dto.createdAt = bookingEntity.createdAt;
+        dto.confirmedAt = bookingEntity.confirmedAt;
+        dto.cancelledAt = bookingEntity.cancelledAt;
+        dto.completedAt = bookingEntity.completedAt;
 
         // Service info
-        dto.serviceTitle = booking.service.title;
-        dto.serviceType = booking.service.serviceType;
+        dto.serviceTitle = bookingEntity.service.title;
+        dto.serviceType = bookingEntity.service.serviceType;
 
         // Client info
-        dto.clientName = booking.client.getFullName();
-        dto.clientUsername = booking.client.username;
+        dto.clientName = bookingEntity.client.getFullName();
+        dto.clientUsername = bookingEntity.client.username;
 
         // Fighter info
-        dto.fighterName = booking.getFighter().getDisplayName();
-        dto.fighterUsername = booking.getFighter().username;
+        dto.fighterName = bookingEntity.getFighter().getDisplayName();
+        dto.fighterUsername = bookingEntity.getFighter().username;
 
         return dto;
     }

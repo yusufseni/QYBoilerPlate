@@ -5,7 +5,6 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,7 +22,7 @@ public class FighterServiceEntity extends PanacheEntityBase {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "fighter_id")
-    public User fighter;
+    public UserEntity fighter;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -49,14 +48,14 @@ public class FighterServiceEntity extends PanacheEntityBase {
     public LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    public List<Booking> bookings = new ArrayList<>();
+    public List<BookingEntity> bookingEntities = new ArrayList<>();
 
     // Static finder methods
     public static List<FighterServiceEntity> findByServiceType(ServiceType type) {
         return list("serviceType = ?1 and isActive = true", type);
     }
 
-    public static List<FighterServiceEntity> findByFighter(User fighter) {
+    public static List<FighterServiceEntity> findByFighter(UserEntity fighter) {
         return list("fighter = ?1 and isActive = true", fighter);
     }
 }

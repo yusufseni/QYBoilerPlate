@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "fight_records")
-public class FightRecord extends PanacheEntityBase {
+public class FightRecordEntity extends PanacheEntityBase {
 
     @Id
     @GeneratedValue
@@ -20,7 +20,7 @@ public class FightRecord extends PanacheEntityBase {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "fighter_id")
-    public User fighter;
+    public UserEntity fighter;
 
     @Column(nullable = false)
     @NotBlank
@@ -48,15 +48,15 @@ public class FightRecord extends PanacheEntityBase {
     public String notes;
 
     // Helper method to get record stats
-    public static long getWins(User fighter) {
+    public static long getWins(UserEntity fighter) {
         return count("fighter = ?1 and result = ?2", fighter, FightResult.WIN);
     }
 
-    public static long getLosses(User fighter) {
+    public static long getLosses(UserEntity fighter) {
         return count("fighter = ?1 and result = ?2", fighter, FightResult.LOSS);
     }
 
-    public static long getDraws(User fighter) {
+    public static long getDraws(UserEntity fighter) {
         return count("fighter = ?1 and result = ?2", fighter, FightResult.DRAW);
     }
 }
