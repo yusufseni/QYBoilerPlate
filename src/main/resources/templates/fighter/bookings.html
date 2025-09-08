@@ -1,0 +1,59 @@
+<!-- fighter/bookings.html -->
+{#include base.html}
+{#title}My Bookings{/title}
+
+{#content}
+<div class="container mt-4">
+
+    <!-- Flash message -->
+    {#if flash && flash.text}
+        <div class="alert alert-{flash.type.name().toLowerCase()}">
+            {flash.text}
+        </div>
+    {/if}
+
+    <h2 class="mb-3">Bookings for {fighter.fullName}</h2>
+
+    <!-- If no bookings -->
+    {#if bookings.isEmpty}
+        <div class="alert alert-info">
+            You don’t have any bookings yet.
+        </div>
+    {#else}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Date</th>
+                    <th>Service</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#for booking in bookings}
+                <tr>
+                    <td>{booking.client.fullName}</td>
+                    <td>{booking.date}</td>
+                    <td>{booking.service.name}</td>
+                    <td>
+                        <span class="badge bg-secondary">{booking.status.name()}</span>
+                    </td>
+                    <td>
+                        {#if booking.status.name() == 'PENDING'}
+                            <a href="/bookings/{booking.id}/confirm" class="btn btn-sm btn-success">Confirm</a>
+                            <a href="/bookings/{booking.id}/reject" class="btn btn-sm btn-danger">Reject</a>
+                        {#else if booking.status.name() == 'CONFIRMED'}
+                            <a href="/bookings/{booking.id}/complete" class="btn btn-sm btn-primary">Complete</a>
+                        {#else}
+                            <span class="text-muted">No actions</span>
+                        {/if}
+                    </td>
+                </tr>
+                {/for}
+            </tbody>
+        </table>
+    {/if}
+
+</div>
+{/content}

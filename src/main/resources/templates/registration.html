@@ -1,82 +1,352 @@
-<!-- registration.html -->
+<!-- registration.html (Complete Client Registration) -->
 {#include base.html}
-    {#title}Registration{/title}
+    {#title}Client Registration{/title}
 
     {#content}
-        <form action="/registration" method="post"
-              class="p-5 rounded shadow position-relative"
-              style="background-color:rgba(30,30,30,0.92); width: 100%; max-width: 500px; border: 2px solid #f0ad4e; z-index: 2; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);">
+        <div class="container position-relative" style="z-index:2;">
+            <div class="row justify-content-center">
+                <div class="col-md-7 col-lg-6">
+                    {#if flash && flash.type && flash.text}
+                        <div class="alert alert-{flash.type.name().toLowerCase()}">
+                            {flash.text}
+                        </div>
+                    {/if}
 
-            <h3 class="text-center mb-4" style="color:#f0ad4e; font-family: 'Orbitron', sans-serif; letter-spacing: 1px;">Create Account</h3>
+                    <form method="post" action="/registration" class="client-registration-form">
+                        <div class="text-center mb-4">
+                            <h1 style="color:#f0ad4e; font-family: 'Orbitron', sans-serif;">Client Registration</h1>
+                            <p class="text-light">Find and connect with fighters and organizations</p>
+                        </div>
 
-            {#if flash && flash.type && flash.text}
-                <div class="alert alert-{flash.type.name().toLowerCase()}">
-                    {flash.text}
-                </div>
-            {/if}
+                        <div class="mb-3 col-md-12">
+                            <label for="organizationType" class="form-label" style="color:#f5f5f5;">Organization Type</label>
+                            <select id="organizationType" name="organizationType" class="form-control" required style="text-transform: capitalize;">
+                                <option value="">Select organization type</option>
+                                {#for orgType in organizationTypes}
+                                    <option value="{orgType.name}">
+                                        {orgType.name.replace('_', ' ').toLowerCase()}
+                                    </option>
+                                {/for}
+                            </select>
+                        </div>
 
-            <div class="row">
-                <div class="mb-3 col-md-12">
-                    <label for="organizationType" class="form-label" style="color:#f5f5f5;">Organization Type</label>
-                    <select id="organizationType" name="organizationType" class="form-control" required style="text-transform: capitalize;">
-                        <option value="">Select organization type</option>
-                        {#for orgType in organizationTypes}
-                            <option value="{orgType.name}">
-                                {orgType.name.replace('_', ' ').toLowerCase()}
-                            </option>
-                        {/for}
-                    </select>
-                </div>
+                        <!-- Personal Information Section -->
+                        <div class="section-header mb-3">
+                            <h5 class="text-warning mb-0">General Information</h5>
+                            <hr class="mt-1" style="border-color: #f0ad4e; opacity: 0.5;">
+                        </div>
 
-                <div class="mb-3 col-md-6">
-                    <label for="username" class="form-label" style="color:#f5f5f5;">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" required
-                           placeholder="Choose a username">
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="email" class="form-label" style="color:#f5f5f5;">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" required
-                           placeholder="your@email.com">
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="password" class="form-label" style="color:#f5f5f5;">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" required
-                           placeholder="Create a password">
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="firstName" class="form-label" style="color:#f5f5f5;">First Name</label>
-                    <input type="text" id="firstName" name="firstName" class="form-control"
-                           placeholder="Your first name">
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="lastName" class="form-label" style="color:#f5f5f5;">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" class="form-control"
-                           placeholder="Your last name">
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="phoneNumber" class="form-label" style="color:#f5f5f5;">Phone Number</label>
-                    <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control"
-                           placeholder="e.g. +62 812-3456-7890">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="firstName" class="form-label text-light">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="John">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="lastName" class="form-label text-light">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Doe">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phoneNumber" class="form-label text-light">Phone Number</label>
+                            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="+62 812-3456-7890">
+                            <div class="form-text text-muted small">We'll use this to contact you about bookings</div>
+                        </div>
+
+                        <!-- Account Information Section -->
+                        <div class="section-header mb-3 mt-4">
+                            <h5 class="text-warning mb-0">Account Information</h5>
+                            <hr class="mt-1" style="border-color: #f0ad4e; opacity: 0.5;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label text-light">Username <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="username" name="username" required placeholder="johndoe123">
+                            <div class="form-text text-muted small">Choose a unique username for your account</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label text-light">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="john@example.com">
+                            <div class="form-text text-muted small">We'll send confirmations to this email</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label text-light">Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password" required minlength="6" placeholder="••••••••">
+                            <div class="form-text text-muted small">Minimum 6 characters</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label text-light">Confirm Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6" placeholder="••••••••">
+                            <div id="passwordError" class="form-text text-danger small" style="display: none;">Passwords do not match</div>
+                        </div>
+
+                        <!-- Preferences Section -->
+                        <div class="section-header mb-3 mt-4">
+                            <h5 class="text-warning mb-0">Preferences</h5>
+                            <hr class="mt-1" style="border-color: #f0ad4e; opacity: 0.5;">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-light">Interested in:</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="interests" value="MMA" id="interestMMA">
+                                        <label class="form-check-label text-light" for="interestMMA">MMA</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="interests" value="Boxing" id="interestBoxing">
+                                        <label class="form-check-label text-light" for="interestBoxing">Boxing</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="interests" value="Muay Thai" id="interestMuayThai">
+                                        <label class="form-check-label text-light" for="interestMuayThai">Muay Thai</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="interests" value="BJJ" id="interestBJJ">
+                                        <label class="form-check-label text-light" for="interestBJJ">Brazilian Jiu-Jitsu</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="interests" value="Fitness" id="interestFitness">
+                                        <label class="form-check-label text-light" for="interestFitness">Fitness Training</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="interests" value="Self Defense" id="interestSelfDefense">
+                                        <label class="form-check-label text-light" for="interestSelfDefense">Self Defense</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <!-- Terms and Privacy -->
+                            <label class="form-label text-light">Terms and Aggrement:</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                                        <label class="form-check-label text-light" for="agreeTerms">
+                                            I agree to the <a href="/terms" target="_blank">Terms of Service</a> and <a href="/privacy" target="_blank">Privacy Policy</a> <span class="text-danger">*</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="emailUpdates">
+                                        <label class="form-check-label text-light" for="emailUpdates">
+                                            Send me updates about new fighters and special offers
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn w-100 mt-4" style="background-color:#f0ad4e; color:#121212; font-weight:bold; padding: 12px;" id="submitBtn">
+                            Create My Account
+                        </button>
+
+                        <!-- Alternative Actions -->
+                        <div class="text-center mt-4">
+                            <div class="mb-2">
+                                <small class="text-light">Already have an account?</small>
+                                <a href="/login" class="text-warning fw-bold">Login here</a>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-light">Are you a professional fighter?</small>
+                                <a href="/fighter-registration" class="text-warning fw-bold">Register as Fighter</a>
+                            </div>
+                        </div>
+
+                        <!-- Social Registration (Future Feature) -->
+                        <div class="text-center mt-4 pt-3" style="border-top: 1px solid #444;">
+                            <small class="text-muted d-block mb-2">Or sign up with:</small>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button type="button" class="btn btn-outline-light btn-sm" disabled>
+                                    <i class="fab fa-google"></i> Google
+                                </button>
+                                <button type="button" class="btn btn-outline-light btn-sm" disabled>
+                                    <i class="fab fa-facebook"></i> Facebook
+                                </button>
+                            </div>
+                            <small class="text-muted">Social registration coming soon</small>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <button type="submit" class="btn w-100"
-                    style="background: linear-gradient(90deg, #f0ad4e 0%, #ffd700 100%); color:#121212; font-weight:bold; border:none; box-shadow: 0 2px 8px rgba(240,173,78,0.2);">
-                Register
-            </button>
-
-            <p class="text-center mt-3" style="color:#f5f5f5;">
-                Already have an account? <a href="/login" style="color:#ffd700;">Login</a>
-            </p>
-        </form>
+        </div>
     {/content}
 
     {#scripts}
         <style>
-            /* Add any additional styles for the registration page here */
+            .client-registration-form {
+                background-color: rgba(30,30,30,0.95);
+                padding: 2.5rem;
+                border-radius: 12px;
+                box-shadow: 0 0 25px rgba(240, 173, 78, 0.3);
+                border: 2px solid #f0ad4e;
+                max-width: none;
+            }
+
+            .section-header {
+                margin-top: 1.5rem;
+            }
+
+            .form-check-input:checked {
+                background-color: #f0ad4e;
+                border-color: #f0ad4e;
+            }
+
+            .form-check-input:focus {
+                border-color: #f0ad4e;
+                outline: 0;
+                box-shadow: 0 0 0 0.25rem rgba(240, 173, 78, 0.25);
+            }
+
+            .btn-outline-light:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            .form-text.text-muted {
+                font-size: 0.8rem;
+            }
+
+            /* Password strength indicator */
+            .password-strength {
+                height: 4px;
+                margin-top: 5px;
+                border-radius: 2px;
+                transition: all 0.3s ease;
+            }
+
+            .password-weak { background-color: #dc3545; }
+            .password-medium { background-color: #ffc107; }
+            .password-strong { background-color: #28a745; }
+
+            /* Form validation styles */
+            .form-control:invalid {
+                border-color: #dc3545;
+            }
+
+            .form-control:valid {
+                border-color: #28a745;
+            }
         </style>
+
         <script>
-            console.log("Registration page loaded");
+            // Form validation and interactivity
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.querySelector('.client-registration-form');
+                const password = document.getElementById('password');
+                const confirmPassword = document.getElementById('confirmPassword');
+                const passwordError = document.getElementById('passwordError');
+                const submitBtn = document.getElementById('submitBtn');
+
+                // Password matching validation
+                function validatePasswords() {
+                    if (confirmPassword.value && password.value !== confirmPassword.value) {
+                        passwordError.style.display = 'block';
+                        confirmPassword.setCustomValidity('Passwords do not match');
+                    } else {
+                        passwordError.style.display = 'none';
+                        confirmPassword.setCustomValidity('');
+                    }
+                }
+
+                // Add password strength indicator
+                function createPasswordStrengthIndicator() {
+                    const strengthDiv = document.createElement('div');
+                    strengthDiv.className = 'password-strength';
+                    password.parentNode.insertBefore(strengthDiv, password.nextSibling);
+
+                    password.addEventListener('input', function() {
+                        const value = this.value;
+                        let strength = 0;
+
+                        if (value.length >= 6) strength++;
+                        if (value.match(/[a-z]/)) strength++;
+                        if (value.match(/[A-Z]/)) strength++;
+                        if (value.match(/[0-9]/)) strength++;
+                        if (value.match(/[^a-zA-Z0-9]/)) strength++;
+
+                        strengthDiv.className = 'password-strength';
+                        if (strength <= 2) strengthDiv.classList.add('password-weak');
+                        else if (strength <= 3) strengthDiv.classList.add('password-medium');
+                        else strengthDiv.classList.add('password-strong');
+
+                        validatePasswords();
+                    });
+                }
+
+                // Initialize password features
+                createPasswordStrengthIndicator();
+
+                // Real-time password confirmation
+                confirmPassword.addEventListener('input', validatePasswords);
+                password.addEventListener('input', validatePasswords);
+
+                // Form submission handling
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    // Final validation
+                    if (password.value !== confirmPassword.value) {
+                        alert('Passwords do not match!');
+                        return;
+                    }
+
+                    if (!document.getElementById('agreeTerms').checked) {
+                        alert('Please agree to the Terms of Service and Privacy Policy');
+                        return;
+                    }
+
+                    // Show loading state
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating Account...';
+
+                    // Submit the form
+                    setTimeout(() => {
+                        this.submit();
+                    }, 500);
+                });
+
+                // Enhanced form feedback
+                const inputs = form.querySelectorAll('input[required]');
+                inputs.forEach(input => {
+                    input.addEventListener('blur', function() {
+                        if (this.validity.valid) {
+                            this.classList.remove('is-invalid');
+                            this.classList.add('is-valid');
+                        } else {
+                            this.classList.remove('is-valid');
+                            this.classList.add('is-invalid');
+                        }
+                    });
+                });
+
+                // Username availability check (placeholder for future implementation)
+                const username = document.getElementById('username');
+                let usernameTimeout;
+                username.addEventListener('input', function() {
+                    clearTimeout(usernameTimeout);
+                    usernameTimeout = setTimeout(() => {
+                        // Future: Check username availability via AJAX
+                        console.log('Checking username availability:', this.value);
+                    }, 1000);
+                });
+
+                console.log('Client registration form initialized');
+            });
         </script>
     {/scripts}
 {/include}
