@@ -102,12 +102,6 @@ public class UserEntity extends PanacheEntityBase {
     @OneToMany(mappedBy = "fighter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<FightRecordEntity> fightRecordEntities = new ArrayList<>();
 
-    @OneToMany(mappedBy = "fighter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    public List<FighterServiceEntity> services = new ArrayList<>();
-
-    @OneToMany(mappedBy = "fighter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    public List<ReviewEntity> receivedReviews = new ArrayList<>();
-
     // Constructors
     public UserEntity() {}
 
