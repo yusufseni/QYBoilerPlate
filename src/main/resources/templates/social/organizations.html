@@ -1,0 +1,215 @@
+<!-- templates/social/organizations.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizations - IFighter</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/dashboard">IFighter</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/social/friends">Friends</a>
+            <a class="nav-link" href="/social/memberships">Memberships</a>
+            <a class="nav-link" href="/social/organizations">Organizations</a>
+            <a class="nav-link" href="/logout">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Search Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Organization Type</label>
+                    <select name="type" class="form-select">
+                        <option value="">All Types</option>
+                        {#for orgType in organizationTypes}
+                            {#if orgType.name() != 'PERSONAL'}
+                                <option value="{orgType.name()}" {selectedType == orgType.name() ? 'selected' : ''}>
+                                    {orgType.name().replace('_', ' ')}
+                                </option>
+                            {/if}
+                        {/for}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">City</label>
+                    <input type="text" name="city" class="form-control" value="{selectedCity ?: ''}"
+                           placeholder="Enter city name...">
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    <a href="/social/organizations" class="btn btn-outline-secondary">
+                        <i class="fas fa-undo"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Organizations Grid -->
+    <div class="row">
+        {#if organizations.empty}
+            <div class="col-12">
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-building fa-3x mb-3"></i>
+                    <h4>No Organizations Found</h4>
+                    <p>Try adjusting your search filters</p>
+                </div>
+            </div>
+        {#else}
+            {#for org in organizations}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start">
+                                <img src="{org.profileImageUrl ?: '/images/default-organization.png'}"
+                                     alt="{org.getFullName()}" class="rounded me-3"
+                                     style="width: 80px; height: 80px; object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <h5 class="card-title">{org.getFullName()}</h5>
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary">{org.organizationType.name().replace('_', ' ')}</span>
+                                        {#if org.cityEntity}
+                                            <span class="badge bg-secondary">
+                                        <i class="fas fa-map-marker-alt"></i> {org.cityEntity.name}
+                                    </span>
+                                        {/if}
+                                    </div>
+                                    {#if org.bio}
+                                        <p class="card-text text-muted">{org.bio}</p>
+                                    {/if}
+                                    <div class="small text-muted">
+                                        <i class="fas fa-users"></i> {org.getMemberCount()} members
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="/fighter/profile/{org.username}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye"></i> View Profile
+                                    </a>
+                                </div>
+                                <div>
+                                    {#if user.organizationType.name() == 'PERSONAL'}
+                                        <button class="btn btn-primary btn-sm"
+                                                onclick="requestMembership('{org.id}', '{org.getFullName()}')">
+                                            <i class="fas fa-plus"></i> Request Membership
+                                        </button>
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {/for}
+        {/if}
+    </div>
+</div>
+
+<!-- Request Membership Modal -->
+<div class="modal fade" id="membershipModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Request Membership</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="membershipForm">
+                <div class="modal-body">
+                    <input type="hidden" id="organizationId">
+                    <div class="mb-3">
+                        <label class="form-label">Organization</label>
+                        <input type="text" id="organizationName" class="form-control" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Membership Type</label>
+                        <select id="membershipType" class="form-select" required>
+                            <option value="BASIC">Basic Membership</option>
+                            <option value="PREMIUM">Premium Membership</option>
+                            <option value="VIP">VIP Membership</option>
+                            <option value="STUDENT">Student Membership</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" id="startDate" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">End Date (Optional)</label>
+                        <input type="date" id="endDate" class="form-control">
+                        <small class="form-text text-muted">Leave empty for lifetime membership</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Message (Optional)</label>
+                        <textarea id="memberNotes" class="form-control" rows="3"
+                                  placeholder="Tell the organization why you want to join..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function requestMembership(orgId, orgName) {
+        document.getElementById('organizationId').value = orgId;
+        document.getElementById('organizationName').value = orgName;
+        document.getElementById('startDate').value = new Date().toISOString().split('T')[0];
+
+        const modal = new bootstrap.Modal(document.getElementById('membershipModal'));
+        modal.show();
+    }
+
+    document.getElementById('membershipForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = {
+            organizationId: document.getElementById('organizationId').value,
+            membershipType: document.getElementById('membershipType').value,
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value || null,
+            memberNotes: document.getElementById('memberNotes').value
+        };
+
+        fetch('/api/memberships/request', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Close modal and show success message
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('membershipModal'));
+                    modal.hide();
+                    alert('Membership request sent successfully!');
+                } else {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Failed to send request');
+                    });
+                }
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+            });
+    });
+</script>
+</body>
+</html>

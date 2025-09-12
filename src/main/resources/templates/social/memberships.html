@@ -1,0 +1,213 @@
+<!-- templates/social/memberships.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memberships - IFighter</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/dashboard">IFighter</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="/social/friends">Friends</a>
+            <a class="nav-link" href="/social/memberships">Memberships</a>
+            <a class="nav-link" href="/social/organizations">Organizations</a>
+            <a class="nav-link" href="/logout">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    {#if flash.text}
+        <div class="alert alert-{flash.type.name().toLowerCase()} alert-dismissible fade show" role="alert">
+            {flash.text}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {/if}
+
+    <div class="row">
+        <!-- My Memberships -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-id-card"></i> My Memberships ({memberships.size()})</h5>
+                    <a href="/social/organizations" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus"></i> Join Organization
+                    </a>
+                </div>
+                <div class="card-body">
+                    {#if memberships.empty}
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-building fa-3x mb-3"></i>
+                            <p>You don't have any memberships yet.</p>
+                            <a href="/social/organizations" class="btn btn-primary">Browse Organizations</a>
+                        </div>
+                    {#else}
+                        {#for membership in memberships}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h6 class="card-title">{membership.organizationName}</h6>
+                                            <p class="card-text">
+                                            <span class="badge bg-{membership.status.name() == 'ACTIVE' ? 'success' :
+                                            membership.status.name() == 'PENDING' ? 'warning' :
+                                            membership.status.name() == 'SUSPENDED' ? 'danger' : 'secondary'}">
+                                                {membership.status.name()}
+                                            </span>
+                                                <span class="badge bg-info">{membership.membershipType.displayName}</span>
+                                            </p>
+                                            <small class="text-muted">
+                                                Member since: {membership.startDate}
+                                                {#if membership.endDate} • Expires: {membership.endDate}{/if}
+                                                {#if membership.monthlyFee} • ${membership.monthlyFee}/month{/if}
+                                            </small>
+                                            {#if membership.benefits}
+                                                <div class="mt-2">
+                                                    <strong>Benefits:</strong> {membership.benefits}
+                                                </div>
+                                            {/if}
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <div class="btn-group">
+                                                <a href="/fighter/profile/{membership.organizationUsername}"
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-eye"></i> View
+                                                </a>
+                                                {#if membership.status.name() == 'ACTIVE'}
+                                                    <button class="btn btn-sm btn-outline-danger"
+                                                            onclick="cancelMembership('{membership.id}', '{membership.organizationName}')">
+                                                        <i class="fas fa-times"></i> Cancel
+                                                    </button>
+                                                {/if}
+                                            </div>
+                                            {#if membership.isExpiringSoon()}
+                                                <div class="alert alert-warning mt-2 p-2">
+                                                    <small><i class="fas fa-exclamation-triangle"></i> Expires soon!</small>
+                                                </div>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {/for}
+                    {/if}
+                </div>
+            </div>
+        </div>
+
+        <!-- Organization Members (if user is organization) -->
+        <div class="col-lg-4">
+            {#if user.isOrganization() && members}
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-users"></i> Our Members ({members.size()})</h6>
+                    </div>
+                    <div class="card-body">
+                        {#if members.empty}
+                            <p class="text-muted mb-0">No members yet</p>
+                        {#else}
+                            {#for member in members}
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{member.memberProfileImageUrl ?: '/images/default-avatar.png'}"
+                                         alt="{member.memberName}" class="rounded-circle me-2"
+                                         style="width: 40px; height: 40px; object-fit: cover;">
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold">{member.memberName}</div>
+                                        <small class="text-muted">@{member.memberUsername}</small>
+                                        <div class="small">
+                                    <span class="badge bg-{member.membershipType.name() == 'PREMIUM' ? 'warning' :
+                                    member.membershipType.name() == 'VIP' ? 'success' : 'secondary'}">
+                                        {member.membershipType.displayName}
+                                    </span>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                                data-bs-toggle="dropdown">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="/fighter/profile/{member.memberUsername}">
+                                                    <i class="fas fa-eye"></i> View Profile
+                                                </a></li>
+                                            {#if member.status.name() == 'ACTIVE'}
+                                                <li><a class="dropdown-item" href="#"
+                                                       onclick="suspendMembership('{member.id}', '{member.memberName}')">
+                                                        <i class="fas fa-pause"></i> Suspend
+                                                    </a></li>
+                                            {/if}
+                                            {#if member.status.name() == 'SUSPENDED'}
+                                                <li><a class="dropdown-item" href="#"
+                                                       onclick="reactivateMembership('{member.id}')">
+                                                        <i class="fas fa-play"></i> Reactivate
+                                                    </a></li>
+                                            {/if}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {/for}
+                        {/if}
+                    </div>
+                </div>
+            {#else}
+                <!-- Membership Tips -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="fas fa-lightbulb"></i> Membership Benefits</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Access to exclusive content</li>
+                            <li><i class="fas fa-check text-success"></i> Priority booking</li>
+                            <li><i class="fas fa-check text-success"></i> Member-only events</li>
+                            <li><i class="fas fa-check text-success"></i> Special discounts</li>
+                        </ul>
+                    </div>
+                </div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+<script>
+    function cancelMembership(membershipId, organizationName) {
+        const reason = prompt(`Cancel membership with ${organizationName}? Please provide a reason:`);
+        if (reason !== null && reason.trim() !== '') {
+            const formData = new FormData();
+            formData.append('reason', reason);
+
+            fetch(`/api/memberships/${membershipId}/cancel`, {
+                method: 'PUT',
+                body: formData
+            }).then(() => location.reload());
+        }
+    }
+
+    function suspendMembership(membershipId, memberName) {
+        const reason = prompt(`Suspend ${memberName}'s membership? Please provide a reason:`);
+        if (reason !== null && reason.trim() !== '') {
+            const formData = new FormData();
+            formData.append('reason', reason);
+
+            fetch(`/api/memberships/${membershipId}/suspend`, {
+                method: 'PUT',
+                body: formData
+            }).then(() => location.reload());
+        }
+    }
+
+    function reactivateMembership(membershipId) {
+        if (confirm('Reactivate this membership?')) {
+            fetch(`/api/memberships/${membershipId}/reactivate`, {
+                method: 'PUT'
+            }).then(() => location.reload());
+        }
+    }
+</script>
+</body>
+</html>
