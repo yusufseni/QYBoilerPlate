@@ -7,11 +7,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "cities")
-public class CityEntity extends PanacheEntityBase {
-
-    @Id
-    @GeneratedValue
-    public UUID id;
+public class CityEntity extends BaseEntity {
 
     @Column(nullable = false, length = 100)
     public String name;

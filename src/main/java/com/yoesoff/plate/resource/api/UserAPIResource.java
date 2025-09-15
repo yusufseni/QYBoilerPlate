@@ -1,4 +1,4 @@
-package com.yoesoff.plate.resource;
+package com.yoesoff.plate.resource.api;
 
 import com.yoesoff.plate.dto.UserDTO;
 import com.yoesoff.plate.service.UserService;
@@ -12,7 +12,7 @@ import java.util.UUID;
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class UserResource {
+public class UserAPIResource {
 
     @Inject
     UserService userService;

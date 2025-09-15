@@ -21,11 +21,7 @@ import java.util.UUID;
         @UniqueConstraint(columnNames = {"username"}),
         @UniqueConstraint(columnNames = {"email"})
 })
-public class UserEntity extends PanacheEntityBase {
-
-    @Id
-    @GeneratedValue
-    public UUID id;
+public class UserEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -64,11 +60,6 @@ public class UserEntity extends PanacheEntityBase {
     public String bio;
 
     public String profileImageUrl;
-
-    @Column(nullable = false)
-    public LocalDateTime createdAt = LocalDateTime.now();
-
-    public LocalDateTime updatedAt = LocalDateTime.now();
 
     // Location coordinates
     @Column(precision = 10, scale = 6)

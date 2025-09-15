@@ -1,4 +1,4 @@
-package com.yoesoff.plate.resource;
+package com.yoesoff.plate.resource.web;
 
 import com.yoesoff.plate.dto.FlashMessage;
 import com.yoesoff.plate.entity.UserEntity;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Path("/")
-public class AuthResource {
+public class AuthWebResource {
 
     private static final String SESSION_COOKIE = "SESSION";
 

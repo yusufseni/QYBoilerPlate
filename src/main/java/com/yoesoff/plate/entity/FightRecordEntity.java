@@ -12,11 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "fight_records")
-public class FightRecordEntity extends PanacheEntityBase {
-
-    @Id
-    @GeneratedValue
-    public UUID id;
+public class FightRecordEntity extends BaseEntity {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "fighter_id")
