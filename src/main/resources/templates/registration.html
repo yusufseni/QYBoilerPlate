@@ -6,11 +6,6 @@
         <div class="container position-relative" style="z-index:2;">
             <div class="row justify-content-center">
                 <div class="col-md-7 col-lg-6">
-                    {#if flash && flash.type && flash.text}
-                        <div class="alert alert-{flash.type.name().toLowerCase()}">
-                            {flash.text}
-                        </div>
-                    {/if}
 
                     <form method="post" action="/registration" class="client-registration-form">
                         <div class="text-center mb-4">
