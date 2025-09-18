@@ -8,10 +8,16 @@
             <h3 class="text-center mb-4" style="color:#f0ad4e;">Login</h3>
 
             {#if flash && flash.type && flash.text}
-                <div class="alert alert-{flash.type.name().toLowerCase()}">
+                <div class="alert alert-{flash.type.name().toLowerCase()} flash-message">
                     {flash.text}
                 </div>
             {/if}
+            <script>
+                setTimeout(() => {
+                    const el = document.querySelector('.flash-message');
+                    if (el) el.style.display = 'none';
+                }, 3000);
+            </script>
 
             <div class="mb-3">
                 <label for="username" class="form-label" style="color:#f5f5f5;">Username</label>

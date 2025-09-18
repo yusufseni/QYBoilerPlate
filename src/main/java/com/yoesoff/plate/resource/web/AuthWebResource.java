@@ -4,6 +4,7 @@ import com.yoesoff.plate.dto.FlashMessage;
 import com.yoesoff.plate.entity.UserEntity;
 import com.yoesoff.plate.enums.OrganizationType;
 import com.yoesoff.plate.service.AuthService;
+import com.yoesoff.plate.util.FlashMessageUtil;
 import io.quarkus.qute.Location;
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
@@ -36,13 +37,26 @@ public class AuthWebResource {
         return auth.findUserByToken(token);
     }
 
-    // --- EXISTING LOGIN/LOGOUT METHODS (same as your current code) ---
     @GET
     @Path("login")
     @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance loginPage(@QueryParam("type") String type, @QueryParam("msg") String msg) {
-        return login.data("flash", new FlashMessage(parseType(type), msg));
+    public Response loginPage(@CookieParam(FlashMessageUtil.FLASH_COOKIE) Cookie flashCookie,
+                              @Context HttpHeaders headers) {
+        String type = null, msg = null;
+        if (flashCookie != null) {
+            String[] parts = FlashMessageUtil.parseFlashCookie(flashCookie);
+            if (parts != null && parts.length == 2) {
+                type = parts[0];
+                msg = parts[1];
+            }
+        }
+        // Clear the flash cookie after reading
+        TemplateInstance page = login.data("flash", new FlashMessage(parseType(type), msg));
+        return Response.ok(page)
+                .cookie(FlashMessageUtil.clearFlashCookie())
+                .build();
     }
+
 
     @POST
     @Path("login")
@@ -50,22 +64,22 @@ public class AuthWebResource {
     @Transactional
     public Response doLogin(@RestForm String username, @RestForm String password, @Context UriInfo uriInfo) {
         if (username == null || password == null || username.isBlank() || password.isBlank()) {
-            URI uri = uriInfo.getBaseUriBuilder().path("login")
-                    .queryParam("type", "DANGER")
-                    .queryParam("msg", "Username/password required").build();
-            return Response.seeOther(uri).build();
+            URI uri = uriInfo.getBaseUriBuilder().path("login").build();
+            return Response.seeOther(uri)
+                    .cookie(FlashMessageUtil.createFlashCookie("DANGER", "Username/password required"))
+                    .build();
         }
 
         Optional<UserEntity> userOpt = auth.authenticate(username, password);
         if (userOpt.isEmpty()) {
-            URI uri = uriInfo.getBaseUriBuilder().path("login")
-                    .queryParam("type", "DANGER")
-                    .queryParam("msg", "Login failed").build();
-            return Response.seeOther(uri).build();
+            URI uri = uriInfo.getBaseUriBuilder().path("login").build();
+            return Response.seeOther(uri)
+                    .cookie(FlashMessageUtil.createFlashCookie("DANGER", "Login failed"))
+                    .build();
         }
 
         var session = auth.createSession(userOpt.get(), 7);
-        NewCookie cookie = new NewCookie(
+        NewCookie sessionCookie = new NewCookie(
                 SESSION_COOKIE, session.token, "/", null,
                 "login session", 7 * 24 * 3600,
                 true, true
@@ -74,12 +88,12 @@ public class AuthWebResource {
         // Redirect based on user role
         String redirectPath = userOpt.get().isFighter() ? "fighter/profile" : "dashboard";
 
-        return Response.seeOther(uriInfo.getBaseUriBuilder().path(redirectPath)
-                        .queryParam("type", "SUCCESS")
-                        .queryParam("msg", "Welcome " + username).build())
-                .cookie(cookie)
+        return Response.seeOther(uriInfo.getBaseUriBuilder().path(redirectPath).build())
+                .cookie(sessionCookie)
+                .cookie(FlashMessageUtil.createFlashCookie("SUCCESS", "Welcome " + username))
                 .build();
     }
+
 
     // --- ENHANCED REGISTRATION FOR CLIENTS ---
     @GET
