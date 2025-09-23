@@ -1,0 +1,82 @@
+{#include base.html}
+    {#title}Profile{/title}
+
+    {#content}
+        <div class="container position-relative" style="z-index:2;">
+            <h2 class="text-center text-warning mb-4" style="font-family: 'Orbitron', sans-serif;">
+                User Profile
+            </h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    {#if flash && flash.type && flash.text}
+                        <div class="alert alert-{flash.type.name().toLowerCase()}">
+                            {flash.text}
+                        </div>
+                    {/if}
+                    <div class="card shadow rounded" style="background-color:#1e1e1e; border:2px solid #f0ad4e;">
+                        <div class="card-body">
+                            <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start">
+                                <div class="me-md-4 mb-3 mb-md-0 d-flex justify-content-center">
+                                    <img src="{user.profileImageUrl ?: 'https://cdn.vectorstock.com/i/500p/29/52/faceless-male-avatar-in-hoodie-vector-56412952.jpg'}"
+                                         alt="Profile Photo"
+                                         class="rounded-circle"
+                                         style="width:120px; height:120px; object-fit:cover; border:3px solid #f0ad4e;">
+                                </div>
+                                <div class="text-center text-md-start">
+                                    <h5 class="card-title text-warning">Basic Info</h5>
+                                    <p class="card-text text-light"><strong>Full Name:</strong> {user.firstName ?: ''} {user.lastName ?: ''}</p>
+                                    <p class="card-text text-light"><strong>Username:</strong> {user.username}</p>
+                                    <p class="card-text text-light"><strong>Email:</strong> {user.email}</p>
+                                    <p class="card-text text-light"><strong>Phone:</strong> {user.phoneNumber ?: '<em>Not set</em>'}</p>
+                                    <p class="card-text text-light"><strong>Date of Birth:</strong> {user.dateOfBirth ?: '<em>Not set</em>'}</p>
+                                    <p class="card-text text-light"><strong>City:</strong> {user.cityEntity?.name ?: '<em>Not set</em>'}</p>
+                                    <p class="card-text text-light"><strong>Status:</strong> <span class="badge bg-{user.status.name().toLowerCase()}">{user.status}</span></p>
+                                    <p class="card-text text-light"><strong>Organization Type:</strong> <span class="badge bg-info">{user.organizationType}</span></p>
+                                    <p class="card-text text-light"><strong>Theme:</strong> {user.themes}</p>
+                                    <p class="card-text text-light"><strong>Location:</strong> {user.latitude}, {user.longitude}</p>
+                                </div>
+                            </div>
+                            <hr class="bg-warning">
+                            <div>
+                                <h5 class="text-warning">Fighter Info</h5>
+                                <p class="card-text text-light"><strong>Fight Name:</strong> {user.fightName ?: '<em>Not set</em>'}</p>
+                                <p class="card-text text-light"><strong>Weight Class:</strong> {user.weightClass ?: '<em>Not set</em>'}</p>
+                                <p class="card-text text-light"><strong>Primary Discipline:</strong> {user.primaryDiscipline ?: '<em>Not set</em>'}</p>
+                                <p class="card-text text-light"><strong>Professional Debut:</strong> {user.professionalDebutDate ?: '<em>Not set</em>'}</p>
+                                <p class="card-text text-light"><strong>Gym:</strong> {user.gym ?: '<em>Not set</em>'}</p>
+                                <p class="card-text text-light"><strong>Trainer:</strong> {user.trainer ?: '<em>Not set</em>'}</p>
+                                <p class="card-text text-light"><strong>Achievements:</strong> {user.achievements ?: '<em>Not set</em>'}</p>
+                            </div>
+                            <hr class="bg-warning">
+                            <div>
+                                <h5 class="text-warning">Social Media</h5>
+                                <p class="card-text text-light"><strong>Instagram:</strong> {user.instagramUrl ?: '<em>Not set</em>'}</p>
+                                <p class="card-text text-light"><strong>Twitter:</strong> {user.twitterUrl ?: '<em>Not set</em>'}</p>
+                                <p class="card-text text-light"><strong>Facebook:</strong> {user.facebookUrl ?: '<em>Not set</em>'}</p>
+                                <p class="card-text text-light"><strong>YouTube:</strong> {user.youtubeUrl ?: '<em>Not set</em>'}</p>
+                            </div>
+                            <hr class="bg-warning">
+                            <div>
+                                <h5 class="text-warning">Bio</h5>
+                                <p class="text-light">{user.bio ?: '<em>No bio set</em>'}</p>
+                            </div>
+                            <div class="mt-3">
+                                <a href="/profile/edit" class="btn btn-outline-warning">Edit Profile</a>
+                                <a href="/dashboard" class="btn btn-secondary ms-2">Back to Dashboard</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/content}
+
+    {#scripts}
+        <style>
+            .card { background-color: rgba(30,30,30,0.95); border: 2px solid #f0ad4e; }
+            .badge.bg-active { background-color: #28a745; }
+            .badge.bg-inactive { background-color: #6c757d; }
+            .badge.bg-info { background-color: #17a2b8; }
+        </style>
+    {/scripts}
+{/include}

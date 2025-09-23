@@ -27,7 +27,7 @@ public class AuthWebResource {
     @Inject Template login;
     @Inject Template registration;
     @Inject Template dashboard;
-    @Inject @Location("fighter/registration.html") Template fighterRegistration;
+    @Inject Template profile;
 
 
     @Inject AuthService auth;
@@ -149,71 +149,13 @@ public class AuthWebResource {
         return Response.seeOther(uri).build();
     }
 
-    // --- FIGHTER REGISTRATION ---
     @GET
-    @Path("fighter-registration")
+    @Path("profile")
     @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance fighterRegistrationPage(@QueryParam("type") String type, @QueryParam("msg") String msg) {
-        return fighterRegistration.data("flash", new FlashMessage(parseType(type), msg));
-    }
-
-    @POST
-    @Path("fighter/registration")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Transactional
-    public Response doFighterRegister(
-            @RestForm String username,
-            @RestForm String email,
-            @RestForm String password,
-            @RestForm String firstName,
-            @RestForm String lastName,
-            @RestForm String phoneNumber,
-            @RestForm String fightName,
-            @RestForm String primaryDiscipline,
-            @RestForm String weightClass,
-            @RestForm String gym,
-            @Context UriInfo uriInfo) {
-
-        // Basic validation
-        if (username == null || email == null || password == null ||
-                username.isBlank() || email.isBlank() || password.isBlank()) {
-            URI uri = uriInfo.getBaseUriBuilder().path("fighter/registration")
-                    .queryParam("type", "INFO")
-                    .queryParam("msg", "Username, email, and password are required").build();
-            return Response.seeOther(uri).build();
-        }
-
-        if (auth.usernameExists(username)) {
-            URI uri = uriInfo.getBaseUriBuilder().path("fighter/registration")
-                    .queryParam("type", "WARNING")
-                    .queryParam("msg", "Username already exists").build();
-            return Response.seeOther(uri).build();
-        }
-
-        if (auth.emailExists(email)) {
-            URI uri = uriInfo.getBaseUriBuilder().path("fighter/registration")
-                    .queryParam("type", "WARNING")
-                    .queryParam("msg", "Email already exists").build();
-            return Response.seeOther(uri).build();
-        }
-
-        var fighter = auth.registerFighter(username, email, password, firstName, lastName,
-                phoneNumber, fightName, primaryDiscipline, weightClass, gym);
-
-        URI uri = uriInfo.getBaseUriBuilder().path("login")
-                .queryParam("type", "SUCCESS")
-                .queryParam("msg", "Fighter registration successful! Please login to complete your profile").build();
-        return Response.seeOther(uri).build();
-    }
-
-    // --- DASHBOARD (role-based redirect) ---
-    @GET
-    @Path("dashboard")
-    @Produces(MediaType.TEXT_HTML)
-    public Response dashboardPage(@CookieParam(SESSION_COOKIE) String token,
-                                  @Context UriInfo uriInfo,
-                                  @QueryParam("type") String type,
-                                  @QueryParam("msg") String msg) {
+    public Response userProfilePage(@CookieParam(SESSION_COOKIE) String token,
+                                    @Context UriInfo uriInfo,
+                                    @QueryParam("type") String type,
+                                    @QueryParam("msg") String msg) {
         var userOpt = currentUser(token);
         if (userOpt.isEmpty()) {
             URI uri = uriInfo.getBaseUriBuilder().path("login")
@@ -221,17 +163,37 @@ public class AuthWebResource {
                     .queryParam("msg", "Please login first").build();
             return Response.seeOther(uri).build();
         }
-
-        // Redirect fighters to their profile page
-        if (userOpt.get().isFighter()) {
-            URI uri = uriInfo.getBaseUriBuilder().path("fighter/profile").build();
-            return Response.seeOther(uri).build();
-        }
-
         Map<String, Object> data = new HashMap<>();
         data.put("user", userOpt.get());
         data.put("flash", new FlashMessage(parseType(type), msg));
-        return Response.ok(dashboard.data(data)).build();
+        return Response.ok(profile.data(data)).build();
+    }
+
+    // --- DASHBOARD (role-based redirect) ---
+    @GET
+    @Path("dashboard")
+    @Produces(MediaType.TEXT_HTML)
+    public Response dashboardPage(@CookieParam(SESSION_COOKIE) String token,
+                                  @CookieParam(FlashMessageUtil.FLASH_COOKIE) Cookie flashCookie) {
+        var userOpt = currentUser(token);
+        if (userOpt.isEmpty()) {
+            // No flash here, just redirect
+            return Response.seeOther(UriBuilder.fromPath("login").build()).build();
+        }
+
+        String type = null, msg = null;
+        if (flashCookie != null) {
+            String[] parts = FlashMessageUtil.parseFlashCookie(flashCookie);
+            if (parts != null && parts.length == 2) {
+                type = parts[0];
+                msg = parts[1];
+            }
+        }
+        TemplateInstance page = dashboard.data("user", userOpt.get())
+                .data("flash", new FlashMessage(parseType(type), msg));
+        return Response.ok(page)
+                .cookie(FlashMessageUtil.clearFlashCookie())
+                .build();
     }
 
     // --- LOGOUT (same as your current code) ---
@@ -243,10 +205,9 @@ public class AuthWebResource {
             auth.deleteSession(token);
         }
         NewCookie expired = new NewCookie(SESSION_COOKIE, "", "/", null, "logout", 0, true, true);
-        return Response.seeOther(uriInfo.getBaseUriBuilder().path("login")
-                        .queryParam("type", "SUCCESS")
-                        .queryParam("msg", "You have been logged out").build())
+        return Response.seeOther(uriInfo.getBaseUriBuilder().path("login").build())
                 .cookie(expired)
+                .cookie(FlashMessageUtil.createFlashCookie("SUCCESS", "You have been logged out"))
                 .build();
     }
 

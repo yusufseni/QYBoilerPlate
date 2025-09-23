@@ -4,17 +4,14 @@ import com.yoesoff.plate.enums.OrganizationType;
 import com.yoesoff.plate.enums.Status;
 import com.yoesoff.plate.enums.Themes;
 import com.yoesoff.plate.enums.UserRole;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "app_users", uniqueConstraints = {
@@ -23,14 +20,7 @@ import java.util.UUID;
 })
 public class UserEntity extends BaseEntity {
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    public OrganizationType organizationType = OrganizationType.PERSONAL;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    public UserRole role = UserRole.CLIENT;
-
+    // --- Core identity and authentication ---
     @Column(nullable = false)
     @NotBlank
     public String username;
@@ -42,6 +32,16 @@ public class UserEntity extends BaseEntity {
     @Email
     public String email;
 
+    // --- Role and organization ---
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    public OrganizationType organizationType = OrganizationType.PERSONAL;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    public UserRole role = UserRole.CLIENT;
+
+    // --- Status and theme ---
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     public Status status = Status.ACTIVE;
@@ -50,18 +50,27 @@ public class UserEntity extends BaseEntity {
     @Column(nullable = false)
     public Themes themes = Themes.DARK;
 
-    // Basic profile info
+    // --- Profile info ---
+    @Column(nullable = true)
     public String firstName;
+
+    @Column(nullable = true)
     public String lastName;
-    public String phoneNumber;
+
+    @Column(nullable = true)
     public LocalDate dateOfBirth;
 
     @Column(columnDefinition = "TEXT")
     public String bio;
 
+    @Column(nullable = true)
     public String profileImageUrl;
 
-    // Location coordinates
+    // --- Contact info ---
+    @Column(nullable = true)
+    public String phoneNumber;
+
+    // --- Location ---
     @Column(precision = 10, scale = 6)
     public BigDecimal latitude;
 
@@ -72,28 +81,46 @@ public class UserEntity extends BaseEntity {
     @JoinColumn(name = "city_id")
     public CityEntity cityEntity;
 
-    // Fighter-specific fields (only populated if role = FIGHTER)
+    // --- Fighter-specific fields ---
+    @Column(nullable = true)
     public String fightName; // Professional fighting name
+
+    @Column(nullable = true)
     public String weightClass;
+
+    @Column(nullable = true)
     public String primaryDiscipline; // MMA, Boxing, Muay Thai, etc.
+
+    @Column(nullable = true)
     public LocalDate professionalDebutDate;
+
+    @Column(nullable = true)
     public String gym;
+
+    @Column(nullable = true)
     public String trainer;
 
     @Column(columnDefinition = "TEXT")
     public String achievements;
 
-    // Social media links
+    // --- Social media links ---
+    @Column(nullable = true)
     public String instagramUrl;
+
+    @Column(nullable = true)
     public String twitterUrl;
+
+    @Column(nullable = true)
     public String facebookUrl;
+
+    @Column(nullable = true)
     public String youtubeUrl;
 
-    // One-to-Many relationships for fighters
+    // --- Relationships ---
     @OneToMany(mappedBy = "fighter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<FightRecordEntity> fightRecordEntities = new ArrayList<>();
 
-    // Constructors
+    // --- Constructors ---
     public UserEntity() {}
 
     public UserEntity(String username, String passwordHash, String email) {
@@ -102,7 +129,7 @@ public class UserEntity extends BaseEntity {
         this.email = email;
     }
 
-    // Helper methods
+    // --- Helper methods ---
     public String getFullName() {
         if (firstName != null && lastName != null) {
             return firstName + " " + lastName;
@@ -119,10 +146,5 @@ public class UserEntity extends BaseEntity {
             return fightName;
         }
         return getFullName();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
     }
 }
